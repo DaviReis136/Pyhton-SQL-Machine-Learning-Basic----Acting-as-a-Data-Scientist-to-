@@ -6,12 +6,14 @@ My project centers on `Lobbyists4America`, <ins>a firm operating in the legislat
 # Contents​
 
 > Review of Questions to Answer / Hypothesis / Approach
-
+  + Review of Questions to Answer
+  + Review of Questions to Hypothesis
+  + Review of Questions to Hypothesis
 > Exploratory analysis
 
 ## Review of Questions to Answer / Hypothesis / Approach​
 
-### Review of Questions to Answer / Hypothesis / Approach​
+### Review of Questions to Answer
 
 * 1- What were the main topics discussed in the Congress tweets?​
 
