@@ -122,3 +122,12 @@ After that, I simply needed to confirm the absence of duplicate records. To do t
 <img width="434" height="206" alt="Captura de tela 2026-07-01 210723" src="https://github.com/user-attachments/assets/2b62ea28-0ff8-4d43-8166-c52536c30b05" />
 
 <img width="375" height="126" alt="Captura de tela 2026-07-01 210745" src="https://github.com/user-attachments/assets/c8afe07d-e582-4421-a81e-4c1f36a25968" />
+
+Since I know which columns contain no duplicate records—and indeed should not have any—I will select them as primary keys. 
+After that, I examine the records in each column to classify its data type. 
+Example:
+
+<img width="477" height="278" alt="image" src="https://github.com/user-attachments/assets/5b01ec48-5d9e-4195-969f-11f33d0387cf" />
+
+<img width="197" height="25" alt="Captura de tela 2026-07-02 113602" src="https://github.com/user-attachments/assets/9f9dbc67-8f47-404d-9b39-0753bda3d88c" />
+
