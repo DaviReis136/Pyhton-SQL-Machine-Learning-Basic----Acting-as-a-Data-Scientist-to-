@@ -1,6 +1,6 @@
 # Resum 
 
-My project centers on Lobbyists4America, a firm operating in the legislative sector that aims to provide valuable information to its clients—the company's target audience. These clients, in turn, seek to influence legislation in the United States. Achieving this requires a strategic approach to gathering relevant information for them. To implement this strategy, they have hired me as a data scientist to analyze Congressional tweets from 2008 to 2017, shedding light on key issues, relationships, and members of Congress. Consequently, the target audience for the proposed solution is the same group that requested it: Lobbyists4America’s own clients. However, there is another group that—while not the primary focus of my project—might also be interested in the solution addressing the issues raised by Lobbyists4America. This group includes media outlets attracted to major topics discussed by Congress (especially attention-grabbing subjects like the implementation of specific laws) and the professionals within that sphere—journalists, reporters, and the outlets' respective audiences—as well as the parties upon whom Lobbyists4America’s clients sought to exert influence based on the issues highlighted by the Congressional data.
+My project centers on `Lobbyists4America`, a firm operating in the legislative sector that aims to provide valuable information to its clients—the company's target audience. These clients, in turn, seek to influence legislation in the United States. Achieving this requires a strategic approach to gathering relevant information for them. To implement this strategy, they have hired me as a data scientist to analyze Congressional tweets from 2008 to 2017, shedding light on key issues, relationships, and members of Congress. Consequently, the target audience for the proposed solution is the same group that requested it: Lobbyists4America’s own clients. However, there is another group that—while not the primary focus of my project—might also be interested in the solution addressing the issues raised by Lobbyists4America. This group includes media outlets attracted to major topics discussed by Congress (especially attention-grabbing subjects like the implementation of specific laws) and the professionals within that sphere—journalists, reporters, and the outlets' respective audiences—as well as the parties upon whom Lobbyists4America’s clients sought to exert influence based on the issues highlighted by the Congressional data.
 
 
 # Contents​
@@ -131,3 +131,5 @@ Example:
 
 <img width="197" height="25" alt="Captura de tela 2026-07-02 113602" src="https://github.com/user-attachments/assets/9f9dbc67-8f47-404d-9b39-0753bda3d88c" />
 
+
+in progress...
