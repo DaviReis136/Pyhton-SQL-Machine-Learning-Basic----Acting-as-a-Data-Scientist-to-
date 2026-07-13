@@ -519,22 +519,47 @@ memory usage: 270.4+ MB
 
 ### Obtaining descriptive statistics
 
-Descriptive statistics were obtained, including count, mean, minimum, maximum, and quartiles.
+Descriptive statistics were obtained, including count, mean, minimum, maximum, and quartiles. Function to convert scientific notation and  timestamp.
 
 ```
 </> Python
 
-Tweets.describe()
+import pandas as pd
 
-<img width="886" height="280" alt="image" src="https://github.com/user-attachments/assets/f0e368dd-0dec-41b5-96ae-e3fab5ca4cac" />
+# 1. Change the general display to floats without scientific notation
+pd.set_option('display.float_format', lambda x: '%.2f' % x)
+
+# 2. Convert the 'created_at' column from Unix Timestamp to Real Date
+Tweets['created_at'] = pd.to_datetime(Tweets['created_at'], unit='s')
+
+# 3. Execute the describe function including the formatted dates
+Tweets.describe(datetime_is_numeric=True)
+
+```
+```
+</> Python
+
+Output:
+
+| Estatística       | created_at          | favorite_count |                      id |   in_reply_to_status_id | in_reply_to_user_id | retweet_count |            user_id |        quoted_status_id |
+| :---------------- | :------------------ | -------------: | ----------------------: | ----------------------: | ------------------: | ------------: | -----------------: | ----------------------: |
+| **Count**         | 1,243,370           |      1,243,370 |               1,243,370 |                  54,146 |              65,411 |     1,243,370 |          1,243,370 |                  56,418 |
+| **Mean**          | 2015-06-11 21:10:00 |         200.85 | 609,659,600,000,000,000 | 662,478,400,000,000,000 |  30,553,190,000,000 |        190.06 | 13,974,050,000,000 | 775,152,900,000,000,000 |
+| **Std**           | 52,263,240          |       3,545.41 | 214,092,500,000,000,000 | 210,676,800,000,000,000 | 152,843,500,000,000 |      9,944.39 | 10,533,830,000,000 |   7,897,866,000,000,000 |
+| **Min**           | 2008-08-04 17:28:51 |           0.00 |              87,741,860 |           1,059,864,000 |                  20 |          0.00 |          5,558,312 |              90,957,760 |
+| **25%**           | 2014-06-14 02:40:00 |           0.00 | 476,795,200,000,000,000 | 552,497,700,000,000,000 |          30,380,230 |          1.00 |         33,750,800 | 725,045,100,000,000,000 |
+| **50% (Mediana)** | 2015-11-04 16:50:00 |           2.00 | 662,381,800,000,000,000 | 739,907,400,000,000,000 |         204,905,600 |          4.00 |        234,022,300 | 794,551,000,000,000,000 |
+| **75%**           | 2016-10-02 02:30:00 |           8.00 | 781,241,600,000,000,000 | 831,621,200,000,000,000 |         622,731,300 |         10.00 |         99,315,300 | 839,266,200,000,000,000 |
+| **Max**           | 2017-06-06 17:16:00 |     984,832.00 | 872,140,000,000,000,000 | 872,139,400,000,000,000 | 866,745,300,000,000 |  3,637,896.00 | 85,471,510,000,000 | 872,138,300,000,000,000 |
 
 ```
 
+<img width="886" height="280" alt="image" src="https://github.com/user-attachments/assets/f0e368dd-0dec-41b5-96ae-e3fab5ca4cac" />
+
+
+
 -desativar notação cíentifica
 pd.set_option('display.float_format', lambda x: '%.2f' % x)
-
-
-### Function to convert scientific notation
 
 ### Import DuckDB
 
@@ -551,28 +576,272 @@ import duckdb
 
 It was found that the tweets cover the period between 2008 and 2017.
 
-<img width="782" height="560" alt="image" src="https://github.com/user-attachments/assets/2501f4c5-1f79-4809-8d8f-9244ad6fd524" />
-<img width="744" height="328" alt="image" src="https://github.com/user-attachments/assets/a98fb053-c4eb-4b61-9f44-106027ee26a1" />
-<img width="712" height="520" alt="image" src="https://github.com/user-attachments/assets/041a419c-95d3-4870-9b23-79a5961ed4f3" />
+```
+</> Python
+query = "SELECT make_timestamp(CAST(created_at AS BIGINT) * 1000000) AS data_formatada FROM Tweets ORDER BY created_at DESC"
+resultado = duckdb.sql(query).df()
+print(resultado)
+```
+
+```
+</> Python
+|        Nº | Data Formatada      |
+| --------: | ------------------- |
+|         1 | 2017-06-06 17:16:00 |
+|         2 | 2017-06-06 17:15:57 |
+|         3 | 2017-06-06 17:15:17 |
+|         4 | 2017-06-06 17:15:03 |
+|         5 | 2017-06-06 17:15:01 |
+|         ⋮ | ⋮                    |
+| 1.243.366 | 2008-08-11 20:38:45 |
+| 1.243.367 | 2008-08-11 20:32:52 |
+| 1.243.368 | 2008-08-11 18:48:56 |
+| 1.243.369 | 2008-08-11 18:41:25 |
+| 1.243.370 | 2008-08-11 11:02:11 |
+```
+
+```
+</> Python
+query = "SELECT make_timestamp(CAST(created_at AS BIGINT) * 1000000) AS data_formatada FROM Tweets ORDER BY created_at ASC" resultado = duckdb.sql(query).df() print(resultado) então me mostra como sairia o resultado então
+```
+
+```
+</> Python
+|        Nº | Data Formatada      |
+| --------: | ------------------- |
+|         1 | 2008-08-04 17:28:51 |
+|         2 | 2008-08-06 18:41:25 |
+|         3 | 2008-08-06 18:48:56 |
+|         4 | 2008-08-07 11:52:52 |
+|         5 | 2008-08-07 13:05:25 |
+|         ⋮ | ⋮                    |
+| 1.243.366 | 2017-06-06 17:15:01 |
+| 1.243.367 | 2017-06-06 17:15:03 |
+| 1.243.368 | 2017-06-06 17:15:17 |
+| 1.243.369 | 2017-06-06 17:15:57 |
+| 1.243.370 | 2017-06-06 17:16:00 |
+```
 
 ### Query B
 
 The profiles most retweeted by Congress were identified—revealing relationships between parliamentarians and other accounts—alongside descriptions of the profiles.
 
-<img width="886" height="320" alt="image" src="https://github.com/user-attachments/assets/58da40fb-0687-485e-a487-274deadf26cb" />
-<img width="886" height="315" alt="image" src="https://github.com/user-attachments/assets/3632e59e-5cfd-4328-b15d-8607c45f98c2" />
-<img width="552" height="324" alt="image" src="https://github.com/user-attachments/assets/5c3db795-347c-4d9f-8923-db1b6ac56f21" />
-<img width="878" height="349" alt="image" src="https://github.com/user-attachments/assets/7adabe42-1cad-40d7-a1da-69852d528813" />
-<img width="855" height="330" alt="image" src="https://github.com/user-attachments/assets/33995b5a-041f-4dfd-b6a5-c4cf4ca01a2f" />
-<img width="846" height="327" alt="image" src="https://github.com/user-attachments/assets/2f45d159-d04b-4bc2-85cf-5e6f358ad83f" />
-<img width="869" height="345" alt="image" src="https://github.com/user-attachments/assets/7bddcc99-c1ec-4e34-8df7-8c2361d8ef2e" />
-<img width="850" height="329" alt="image" src="https://github.com/user-attachments/assets/af985132-9226-4410-aa41-5733e1929b6e" />
-<img width="852" height="179" alt="image" src="https://github.com/user-attachments/assets/5931cc92-6d27-4f97-a81b-a7d20fcc03b1" />
+```
+</> Python
+
+query = "SELECT in_reply_to_screen_name, COUNT (in_reply_to_screen_name) as retweets_name FROM Tweets Group By in_reply_to_screen_name Order By retweets_name DESC"
+resultado = duckdb.sql(query).df()
+
+print(resultado)
+
+```
+
+```
+</> Python
+
+Output:
+
+|     Nº | in_reply_to_screen_name | Retweets |
+| -----: | ----------------------- | -------: |
+|      1 | SenatorDurbin           |     1309 |
+|      2 | SenGillibrand           |     1011 |
+|      3 | SenFeinstein            |      798 |
+|      4 | RepMcGovern             |      753 |
+|      5 | SenBobCasey             |      736 |
+|      ⋮ | ⋮                       |        ⋮ |
+| 26.363 | apusateri               |        1 |
+| 26.364 | Astro_Pam               |        1 |
+| 26.365 | AVDIT6                  |        1 |
+| 26.366 | ruchiikatalwar          |        1 |
+| 26.367 | NaN                     |        0 |
+
+```
+
+```
+</> SQL
+SELECT 
+    t.in_reply_to_screen_name,
+    u.name,
+    u.description,
+    COUNT(in_reply_to_screen_name) AS retweets_name
+FROM Tweets t
+JOIN Users u
+    ON t.in_reply_to_screen_name = u.screen_name
+GROUP BY 
+    t.in_reply_to_screen_name,
+    u.name,
+    u.description
+ORDER BY retweets_name DESC
+
+```
+
+```
+</> SQL
+
+Output:
+
+| Nº | in_reply_to_screen_name | Name                 | Description                                                            | Retweets |
+| -: | ----------------------- | -------------------- | ---------------------------------------------------------------------- | -------: |
+|  1 | SenatorDurbin           | Senator Dick Durbin  | Serving the people of Illinois. Senate Democratic Whip...              |     1309 |
+|  2 | SenGillibrand           | Kirsten Gillibrand   | Theo and Henry's mom, U.S. Senator from New York...                    |     1011 |
+|  3 | SenFeinstein            | Sen Dianne Feinstein | United States Senator from California. On Facebook...                  |      798 |
+|  4 | RepMcGovern             | Jim McGovern         | Proudly representing the people of the 2nd District...                 |      753 |
+|  5 | SenBobCasey             | Senator Bob Casey    | Official Twitter profile for U.S. Senator Bob Casey...                 |      736 |
+|  6 | SenJeffMerkley          | Senator Jeff Merkley | U.S. Senator from the State of Oregon. Instagram...                    |      612 |
+|  7 | GovMalloyOffice         | Governor Dan Malloy  | Official account of the Office of Connecticut Governor Dan Malloy...   |      545 |
+|  8 | PattyMurray             | Senator Patty Murray | Official account of U.S. Senator Patty Murray...                       |      531 |
+|  9 | RepAdamSchiff           | Adam Schiff          | Representing California's 28th Congressional District...               |      513 |
+| 10 | RonWyden                | Ron Wyden            | U.S. Senator from Oregon. Ranking Member of @SenateFinance...          |      439 |
+| 11 | SenatorTomUdall         | Tom Udall            | United States Senator from New Mexico.                                 |      381 |
+| 12 | ChrisMurphyCT           | Chris Murphy         | U.S. Senator, Connecticut.                                             |      377 |
+| 13 | RepDonBeyer             | Rep. Don Beyer       | Representing Virginia's 8th District in Congress...                    |      368 |
+| 14 | SenFranken              | Sen. Al Franken      | Official account of U.S. Senator Al Franken...                         |      346 |
+| 15 | RepScottPeters          | Rep. Scott Peters    | Serving #CA52. @EnergyCommerce, @VetAffairsDem...                      |      337 |
+| 16 | SenMarkey               | Ed Markey            | Official account for Senator Edward J. Markey...                       |      285 |
+| 17 | RepCicilline            | David Cicilline      | Tweets from the press office of Congressman David Cicilline...         |      259 |
+| 18 | NYGovCuomo              | Andrew Cuomo         | Father, fisherman, motorcycle enthusiast, 56th Governor of New York... |      250 |
+| 19 | timkaine                | Senator Tim Kaine    | U.S. Senator from Virginia. Husband and father...                      |      233 |
+| 20 | RepRaskin               | Rep. Jamie Raskin    | Proudly serving #MD08 in the U.S. House of Representatives...          |      232 |
+| 21 | SenatorBaldwin          | Sen. Tammy Baldwin   | Official Twitter account of United States Senator Tammy Baldwin...     |      229 |
+| 22 | RepLipinski             | Rep. Daniel Lipinski | Proudly representing the people of Illinois' 3rd District...           |      227 |
+| 23 | SenatorHeitkamp         | Sen. Heidi Heitkamp  | Official Twitter account for Heidi Heitkamp...                         |      226 |
+| 24 | SenatorHassan           | Sen. Maggie Hassan   | Official Twitter account of U.S. Senator Maggie Hassan...              |      211 |
+| 25 | WhipHoyer               | Steny Hoyer          | Democratic Whip of the U.S. House of Representatives...                |      204 |
+| 26 | SenDuckworth            | Tammy Duckworth      | Official Twitter account for Tammy Duckworth...                        |      201 |
+| 27 | SenSanders              | Bernie Sanders       | Longest-serving Independent member of Congress...                      |      201 |
+| 28 | SusanWBrooks            | Susan W. Brooks      | Serving Indiana's 5th Congressional District...                        |      199 |
+| 29 | realDonaldTrump         | Donald J. Trump      | 45th President of the USA.                                             |      197 |
+| 30 | RepDelBene              | Rep. Suzan DelBene   | U.S. Congresswoman representing Washington's 1st District...           |      195 |
+| 31 | GinaRaimondo            | Gina Raimondo        | Governor of Rhode Island dedicated to moving Rhode Island forward...   |      180 |
+| 32 | POTUS                   | President Trump      | 45th President of the United States of America...                      |      178 |
+| 33 | RepDonaldPayne          | Donald Payne Jr.     | Proudly serving New Jersey's 10th District.                            |      178 |
+| 34 | RepMarthaRoby           | Rep. Martha Roby     | Congressional Twitter account for U.S. Representative Martha Roby...   |      174 |
+| 35 | ChrisCoons              | Senator Chris Coons  | Father, husband, U.S. Senator from Delaware...                         |      171 |
+| 36 | FrankPallone            | Rep. Frank Pallone   | Official Twitter account of Congressman Frank Pallone...               |      168 |
+| 37 | RepEsty                 | Elizabeth Esty       | Mom, community advocate, and U.S. Representative...                    |      165 |
+| 38 | GovernorDeal            | Governor Nathan Deal | Governor Nathan Deal is the 82nd Governor of Georgia.                                                |      164 |
+| 39 | RepGaramendi            | John Garamendi       | Congressman for California's 3rd Congressional District...                                           |      158 |
+| 40 | RepKathleenRice         | Kathleen Rice        | U.S. Representative for #NY04 (Long Island). Former Nassau County DA...                              |      153 |
+| 41 | GovernorTomWolf         | Governor Tom Wolf    | Official account for Pennsylvania Governor Tom Wolf. Updates...                                      |      150 |
+| 42 | SenWarren               | Elizabeth Warren     | Official Twitter account of Senator Elizabeth Warren of Massachusetts...                             |      147 |
+| 43 | SenatorCarper           | Senator Tom Carper   | U.S. Senator for Delaware | Ranking Member of @EPWDems.                                              |      146 |
+| 44 | RepBarbaraLee           | Rep. Barbara Lee     | Progressive Democrat proudly representing California's East Bay...                                   |      143 |
+| 45 | OregonGovBrown          | Governor Kate Brown  | Official Twitter presence of Kate Brown, Oregon's 38th Governor...                                   |      129 |
+| 46 | senorrinhatch           | Senator Hatch Office | U.S. Senator from Utah. Tweets are by Sen. Hatch's staff...                                          |      126 |
+| 47 | chelliepingree          | Chellie Pingree      | Farmer, mother, Maine islander, Member of Congress...                                                |      124 |
+| 48 | WVGovernor              | Governor Jim Justice | Jim Justice is the 36th Governor of the State of West Virginia.                                      |      120 |
+| 49 | repjimcooper            | Jim Cooper           | Official feed of U.S. Rep. Jim Cooper. Blue Dog Democrat...                                          |      115 |
+| 50 | SenSherrodBrown         | Sherrod Brown        | Office of United States Senator Sherrod Brown...                                                     |      106 |
+| 51 | RepSarbanes             | Rep. John Sarbanes   | Representing Maryland's 3rd District. Chair of the Democratic Policy and Communications Committee... |      101 |
+| 52 | RepSinema               | Kyrsten Sinema       | Official Twitter feed of U.S. Congresswoman Kyrsten Sinema...                                        |      100 |
+| 53 | ChrisVanHollen          | Chris Van Hollen     | U.S. Senator for Maryland.                                                                           |       97 |
+| 54 | RepDWSweets             | D. Wasserman Schultz | U.S. Congresswoman proudly representing the people of Florida...                                     |       97 |
+| 55 | SenWhitehouse           | Sheldon Whitehouse   | U.S. Senator from Rhode Island, the Ocean State.                                                     |       97 |
+| 56 | SenJohnMcCain           | John McCain          | U.S. Senator John McCain (R-AZ), Chairman of the Senate Armed Services Committee... |       94 |
+| 57 | repjoecrowley           | Rep. Joe Crowley     | Proudly representing New York's 14th Congressional District...                      |       92 |
+| 58 | GOPLeader               | Kevin McCarthy       | I serve as Majority Leader and Representative...                                    |       87 |
+| 59 | SenBennetCO             | Michael F. Bennet    | U.S. Senator for Colorado.                                                          |       87 |
+| 60 | SenKamalaHarris         | Kamala Harris        | Official Twitter account of U.S. Senator Kamala Harris...                           |       87 |
+| 61 | SenBlumenthal           | Richard Blumenthal   | Connecticut's U.S. Senator.                                                         |       86 |
+| 62 | NitaLowey               | Nita Lowey           | Proudly representing New York's 17th District...                                    |       85 |
+| 63 | SenSchumer              | Chuck Schumer        | Official account of Senator Chuck Schumer – New York.                               |       85 |
+| 64 | RepStefanik             | Rep. Elise Stefanik  | Official Twitter account for Congresswoman Elise Stefanik...                        |       84 |
+| 65 | SenAngusKing            | Senator Angus King   | News from the office of Independent U.S. Senator Angus King...                      |       84 |
+| 66 | RepRoKhanna             | Rep. Ro Khanna       | Representing #CA17 in Silicon Valley. Working to expand opportunity...              |       83 |
+| 67 | justinamash             | Justin Amash         | I defend #liberty and explain every vote...                                         |       83 |
+| 68 | RepSchneider            | Rep. Brad Schneider  | Proud to represent the people of Illinois' 10th District...                         |       80 |
+| 69 | RepTimRyan              | Congressman Tim Ryan | Proud Husband | Father | @Cavs @Indians @Browns...                                  |       80 |
+| 70 | SenBobCorker            | Senator Bob Corker   | Official news and updates from United States Senator Bob Corker...                  |       77 |
+| 71 | SenStabenow             | Sen. Debbie Stabenow | Representing the people of the Great State of Michigan...                           |       77 |
+| 72 | repblumenauer           | Earl Blumenauer      | Congressman.                                                                        |       77 |
+| 73 | RepJerryNadler          | (((Rep. Nadler)))    | Representing parts of Manhattan and Brooklyn...                                     |       76 |
+| 74 | PramilaJayapal          | Pramila Jayapal      | Congressmember, WA-07. Advocate for justice...                              |       72 |
+| 75 | RepMcEachin             | Rep. Donald McEachin | Father, husband & Progressive Democrat in Congress...                       |       72 |
+| 76 | RepWalorski             | Jackie Walorski      | Representing Indiana's Second Congressional District.                       |       72 |
+| 77 | SenatorCardin           | Senator Ben Cardin   | U.S. Senator Ben Cardin of Maryland. Ranking Member...                      |       71 |
+| 78 | louiseslaughter         | Louise Slaughter     | Honored to serve the people of Rochester and Monroe County...               |       69 |
+| 79 | MartinHeinrich          | Martin Heinrich      | United States Senator from New Mexico.                                      |       68 |
+| 80 | RepMarkTakano           | Mark Takano          | Proudly representing California's 41st Congressional District...            |       68 |
+| 81 | RepMarcyKaptur          | Marcy Kaptur         | Office of Congresswoman Marcy Kaptur. Longest-serving woman in the House... |       64 |
+| 82 | RepKihuen               | Rep. Ruben J. Kihuen | U.S. Representative proudly serving Nevada's 4th District...                |       63 |
+| 83 | NC_Governor             | Governor Roy Cooper  | Official account of the 75th Governor of North Carolina.                    |       62 |
+| 84 | TulsiGabbard            | Rep. Tulsi Gabbard   | Aloha – Official account of Rep. Tulsi Gabbard...                           |       61 |
+| 85 | keithellison            | Rep. Keith Ellison   | Member of Congress from Minnesota's Fifth District...                       |       60 |
+| 86 | SenatorShaheen          | Sen. Jeanne Shaheen  | Proud Granite Stater serving New Hampshire in the U.S. Senate...            |       59 |
+| 87 | maziehirono             | Senator Mazie Hirono | U.S. Senator Mazie K. Hirono – Proudly serving Hawaii...                    |       57 |
+| 88 | RepDanKildee            | Rep. Dan Kildee      | Honored to represent Michigan's Fifth Congressional District...             |       56 |
+| 89 | NancyPelosi             | Nancy Pelosi         | Democratic Leader, focused on strengthening America...                      |       55 |
+| 90 | RepBradWenstrup         | Brad Wenstrup        | U.S. Representative for Ohio's 2nd Congressional District...                |       55 |
+| 91 | RepTedDeutch            | Rep. Ted Deutch      | Ranking Member of the Ethics Committee. Member of...                        |       54 |
+|  92 | DonaldNorcross          | Donald Norcross        | Representing New Jersey's 1st Congressional District...                            |       53 |
+|  93 | govsambrownback         | Sam Brownback          | Official Twitter page for Kansas Governor Sam Brownback.                           |       53 |
+|  94 | RepPaulTonko            | Paul Tonko             | U.S. Representative for New York's 20th Congressional District...                  |       52 |
+|  95 | SenatorBurr             | Richard Burr           | U.S. Senator from North Carolina, Chairman of the Senate Intelligence Committee... |       52 |
+|  96 | RepShimkus              | John Shimkus           | I represent the 15th Congressional District of Illinois...                         |       51 |
+|  97 | RodneyDavis             | U.S. Rep. Rodney Davis | Proudly representing the 13th Congressional District of Illinois...                |       50 |
+|  98 | GerryConnolly           | Gerry Connolly         | Proudly representing Virginia's 11th Congressional District.                       |       49 |
+|  99 | RepFredUpton            | Fred Upton             | Husband, Dad, and proud to represent Michigan's 6th Congressional District...      |       49 |
+| 100 | SenRonJohnson           | Senator Ron Johnson    | Chairman of the Homeland Security and Governmental Affairs Committee...            |       49 |
+
+
+[100 rows x 4 columns]
+
+
+
+```
 
 ### Query C
 
 The users responsible for the highest number of tweets on behalf of Congress and their profile descriptions were identified.
-Corrigir
+
+```
+</> Python
+query = "SELECT user_id, COUNT (user_id) as tweets_user_id FROM Tweets Group By user_id Order By tweets_user_id DESC"
+resultado = duckdb.sql(query).df()
+
+print(resultado)
+```
+```
+</> Python
+               user_id  tweets_user_id
+0            2962868158            3258
+1             247334603            3252
+2              18023868            3250
+3            3141213592            3250
+4              14845376            3249
+..                  ...             ...
+540           115676070              80
+541           510196665              37
+542  854715071116849157              27
+543  818536152588238849              16
+544            20334348               4
+
+[545 rows x 2 columns]
+
+```
+```
+</> Python
+query = """
+SELECT 
+    t.user_id,
+    u.name,
+    u.description,
+    COUNT(*) AS tweets_user_id
+FROM Tweets t
+JOIN Users u
+    ON t.user_id = u.id
+GROUP BY 
+    t.user_id,
+    u.name,
+    u.description
+ORDER BY tweets_user_id DESC
+LIMIT 30
+"""
+
+resultado = duckdb.sql(query).df()
+print(resultado)
+```
+
 <img width="822" height="336" alt="image" src="https://github.com/user-attachments/assets/041e5f99-5d09-4814-8abd-325133c9b5d6" />
 <img width="502" height="454" alt="image" src="https://github.com/user-attachments/assets/e85cd2e4-ee88-44f6-be3f-6e8cafc8a7f0" />
 <img width="803" height="292" alt="image" src="https://github.com/user-attachments/assets/9293e6d9-95c0-433c-a280-a81573e8af00" />
@@ -613,30 +882,36 @@ print(means)
 
 Output:
 
-contributors                 NaN
-coordinates                  NaN
-created_at          1.433799e+09
-display_text_range           NaN
-entities                     NaN
-favorite_count      2.008517e+02
-favorited          1.447678e-05
-geo                          NaN
-id                 6.096596e+17
-id_str             6.096596e+17
-in_reply_to_screen_name    1.436980e+04
-in_reply_to_status_id    6.624784e+17
-in_reply_to_status_id_str 6.624784e+17
-in_reply_to_user_id     3.055319e+16
-in_reply_to_user_id_str 3.055319e+16
-is_quote_status      4.609328e-02
-lang                         NaN
-place                        NaN
-retweet_count      1.900628e+02
-retweeted          0.000000e+00
-screen_name                  NaN
-source                       NaN
-text               4.538053e+01
-truncated         0.000000e+00
++-----------------------------+------------------------------------+
+
+| Column Name                 | Converted Value / Meaning          |
++-----------------------------+------------------------------------+
+
+| contributors                | NaN (Null / Empty)                 |
+| coordinates                 | NaN (Null / Empty)                 |
+| created_at                  | 2015-06-11 21:10:00 (Average Date) |
+| display_text_range          | NaN (Null / Empty)                 |
+| entities                    | NaN (Null / Empty)                 |
+| favorite_count              | 200.85 (Average likes per tweet)   |
+| favorited                   | 0.00 (Percentage close to 0)       |
+| geo                         | NaN (Null / Empty)                 |
+| id                          | 609659600000000000                 |
+| id_str                      | 609659600000000000                 |
+| in_reply_to_screen_name     | 14369.80                           |
+| in_reply_to_status_id       | 662478400000000000                 |
+| in_reply_to_status_id_str   | 662478400000000000                 |
+| in_reply_to_user_id         | 30553190000000                     |
+| in_reply_to_user_id_str     | 30553190000000                     |
+| is_quote_status             | 0.05 (4.61% of all tweets)         |
+| lang                        | NaN (Null / Empty)                 |
+| place                       | NaN (Null / Empty)                 |
+| retweet_count               | 190.06 (Average retweets per tweet)|
+| retweeted                   | 0.00 (Exactly 0%)                  |
+| screen_name                 | NaN (Null / Empty)                 |
+| source                      | NaN (Null / Empty)                 |
+| text                        | 45.38 (Average text length)        |
+| truncated                   | 0.00 (Exactly 0%)                  |
++-----------------------------+------------------------------------+
 
 ```
 
