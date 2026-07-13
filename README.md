@@ -115,9 +115,13 @@ df.to_csv('user.csv', encoding='utf-8', index=False)
 
 After this process, it is time to import the data into the software. In SQLiteStudio, once I have checked the columns in the CSV file, I will populate the columns in SQLiteStudio using the same names and quantity; then, I will import the data into the ta created in SQLiteStudio:
 
+## 
+
 <img width="846" height="447" alt="image" src="https://github.com/user-attachments/assets/e9836a02-d500-486f-971b-e87805d2367c" />
 
 <img width="829" height="429" alt="image" src="https://github.com/user-attachments/assets/c4b5c463-8d9f-49a6-8a89-a811c13bc527" />
+
+##
 
 To begin my exploratory analysis, I decided to find a column that established a link between the tweets table and the users table. After examining the columns, I noticed that the tweets table had a column named `user_id`, which seemed like an obvious connection point between the two; in the users table, I found the `id` column, which appeared to be the one referenced by the tweets table, so I ran a query to confirm.
 
