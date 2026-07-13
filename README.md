@@ -113,11 +113,11 @@ df = pd.read_json(inputfile, lines=True)
 df.to_csv('user.csv', encoding='utf-8', index=False)
 ```
 
-After this process, it is time to import the data into the software. In SQLiteStudio, once I have checked the columns in the CSV file, I will populate the columns in SQLiteStudio using the same names and quantity; then, I will import the data into the table created in SQLiteStudio:
+After this process, it is time to import the data into the software. In SQLiteStudio, once I have checked the columns in the CSV file, I will populate the columns in SQLiteStudio using the same names and quantity; then, I will import the data into the ta created in SQLiteStudio:
 
-<img width="1347" height="767" alt="Captura de tela 2026-07-01 175729" src="https://github.com/user-attachments/assets/d9603504-409b-49a7-86b8-6cfec89b0e1a" />
+<img width="846" height="447" alt="image" src="https://github.com/user-attachments/assets/e9836a02-d500-486f-971b-e87805d2367c" />
 
-<img width="1355" height="756" alt="Captura de tela 2026-07-01 193439" src="https://github.com/user-attachments/assets/dbbc8d9c-58ac-4c77-ab03-3ab567387984" />
+<img width="829" height="429" alt="image" src="https://github.com/user-attachments/assets/c4b5c463-8d9f-49a6-8a89-a811c13bc527" />
 
 To begin my exploratory analysis, I decided to find a column that established a link between the tweets table and the users table. After examining the columns, I noticed that the tweets table had a column named `user_id`, which seemed like an obvious connection point between the two; in the users table, I found the `id` column, which appeared to be the one referenced by the tweets table, so I ran a query to confirm.
 
@@ -130,8 +130,33 @@ SELECT tweets.user_id,
 FROM tweets, users;
 
 ```
+```
+</> SQL
 
-<img width="609" height="475" alt="Captura de tela 2026-07-01 200917" src="https://github.com/user-attachments/assets/daa8e235-7861-42a3-8518-c985e1ca0531" />
+Output:
+
+      user_id   id           name
+1     5558312   2915095729   Governor Bill Walker
+2     5558312   33537967     Amy Klobuchar
+3     5558312   1378000346   Anthony G. Brown
+4     5558312   269992801    Gov. Asa Hutchinson
+5     5558312   234797704    Rep. Austin Scott
+6     5558312   82453460     RepBThompson
+7     5558312   55677432     Bill Cassidy
+8     5558312   26103389     Gov. Bill Haslam
+9     5558312   15394954     U.S. Rep. Bob Latta
+10    5558312   30216513     Rep. Brad Sherman
+11    5558312   47747074     Brian Schatz
+12    5558312   36396752     Idaho Governor
+13    5558312   305620929    Dutch Ruppersberger
+14    5558312   3298489662   Captain Clay Higgins
+15    5558312   17976923     CathyMcMorrisRodgers
+16    5558312   14984637     Chellie Pingree
+17    5558312   15324851     Senator Chris Coons
+18    5558312   150078976    Chris Murphy
+19    5558312   18137749     Chris Van Hollen
+
+```
 
 ```
 </> SQL
@@ -145,84 +170,364 @@ ON tweets.user_id = users.id;
 
 ```
 
-<img width="673" height="577" alt="Captura de tela 2026-07-01 202212" src="https://github.com/user-attachments/assets/61352fce-e628-492d-a9b3-6ba0ab291708" />
+```
+</> SQL
+
+Output:
+
+user_id_from_tweet       user_id_from_users       name
+1     5558312                  5558312                  Senator John Boozman
+2     5558312                  5558312                  Senator John Boozman
+3     5558312                  5558312                  Senator John Boozman
+4     5558312                  5558312                  Senator John Boozman
+5     5558312                  5558312                  Senator John Boozman
+6     5558312                  5558312                  Senator John Boozman
+7     5558312                  5558312                  Senator John Boozman
+8     5558312                  5558312                  Senator John Boozman
+9     5558312                  5558312                  Senator John Boozman
+10    5558312                  5558312                  Senator John Boozman
+11    5558312                  5558312                  Senator John Boozman
+12    16056306                 16056306                 Jeff Flake
+13    5558312                  5558312                  Senator John Boozman
+14    5558312                  5558312                  Senator John Boozman
+15    5558312                  5558312                  Senator John Boozman
+16    5558312                  5558312                  Senator John Boozman
+17    5558312                  5558312                  Senator John Boozman
+18    5558312                  5558312                  Senator John Boozman
+19    5558312                  5558312                  Senator John Boozman
+```
 
 Now that I have confirmed the hypothesis, I am using them as foreign keys.
 After that, I decided to verify a piece of information requested by the company—an analysis of tweets from 2008 to 2017—and realized that the data in the `tweets` table requires no trimming or additions, given that the creation date of the first tweet is in 2008 and the last is in 2017.
 
-<img width="838" height="458" alt="Captura de tela 2026-07-01 202336" src="https://github.com/user-attachments/assets/3428cf71-0d65-41f3-9451-6fc34db248a0" />
+```
+</> SQL
 
-<img width="895" height="479" alt="Captura de tela 2026-07-01 202428" src="https://github.com/user-attachments/assets/dedbde74-9e70-482c-a6e0-0dc157518896" />
+Output:
+
+created_at ⬆️       display_ text_range  entities
+2008-08-04 17:28:51 [0, 74]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+2008-08-06 19:04:45 [0, 25]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+2008-08-06 20:35:36 [0, 65]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+2008-08-07 13:52:52 [0, 37]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+2008-08-07 15:12:05 [0, 90]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+2008-08-07 18:35:25 [0, 45]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+2008-08-18 14:07:35 [0, 121]             {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+2008-08-20 12:18:43 [0, 32]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+2008-08-21 16:24:07 [0, 84]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+2008-08-28 18:38:20 [0, 80]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+2008-09-03 02:42:32 [0, 28]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+2008-09-04 19:05:07 [0, 109]             {'hashtags': [{'indices':, 'text': 'rnc08'}], 'symbols': [], 'urls': [], ...
+2008-09-09 16:22:47 [0, 134]             {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+2008-09-09 18:14:25 [0, 109]             {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+2008-09-09 19:15:34 [0, 6]               {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+2008-09-11 14:48:52 [0, 45]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+2008-09-16 20:29:08 [0, 112]             {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+2008-09-16 21:10:12 [0, 29]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
+```
+```
+</> SQL
+
+Output:
+
+created_at ⬇️       display_text_range  entities
+2017-06-06 17:16:00 [0, 119]            {'hashtags': [{'indices':, 'text': 'WrongCHOICEAct'}], 'symbols': [], 'urls': []...
+2017-06-06 17:15:57 [0, 135]            {'hashtags': [{'indices':, 'text': 'VZ'}, {'indices':, 'text': 'Maduro'}]...
+2017-06-06 17:15:17 [14, 153]           {'hashtags': [{'indices':, 'text': 'Questions4Betsy'}, {'indices': [141, 153]...
+2017-06-06 17:15:03 [0, 140]            {'hashtags': [{'indices':, 'text': 'ComeyHearing'}], 'symbols': [], 'urls': ...
+2017-06-06 17:15:01 [0, 128]            {'hashtags': [{'indices':, 'text': 'DoddFrank'}], 'symbols': [], 'urls': [], ...
+2017-06-06 17:13:56 [72, 209]           {'hashtags': [{'indices':, 'text': 'Trumpcare'}, {'indices':, 'text': ...
+2017-06-06 17:13:35 [14, 152]           {'hashtags': [{'indices':, 'text': 'TrumpBudget'}, {'indices':, ...
+2017-06-06 17:13:17 [0, 65]             {'hashtags': [{'indices':, 'text': '603pride'}], 'media': [{'display_url': ...
+2017-06-06 17:12:34 [14, 153]           {'hashtags': [{'indices':, 'text': 'Questions4Betsy'}], 'symbols': [], 'urls': []...
+2017-06-06 17:11:04 [0, 140]            {'hashtags': [{'indices':, 'text': 'solar'}, {'indices':, 'text': ...
+2017-06-06 17:11:04 [48, 189]           {'hashtags': [{'indices':, 'text': 'Trumpcare'}], 'media': [{'display_url': ...
+2017-06-06 17:10:51 [0, 141]            {'hashtags': [{'indices':, 'text': 'PellGrants'}], 'symbols': [], 'urls': ...
+2017-06-06 17:10:49 [0, 140]            {'hashtags': [{'indices':, 'text': 'WrongChoiceAct'}], 'media': ...
+2017-06-06 17:10:47 [0, 134]            {'hashtags': [{'indices':, 'text': 'ProtectOurStudents'}, {'indices': [118, ...
+2017-06-06 17:10:46 [0, 15]             {'hashtags': [], 'symbols': [], 'urls': [{'display_url': '://twitter.com€¦'...
+2017-06-06 17:10:25 [0, 40]             {'hashtags': [], 'symbols': [], 'urls': [{'display_url': '://twitter.com€¦'...
+2017-06-06 17:09:56 [14, 158]           {'hashtags': [{'indices':, 'text': 'Questions4Betsy'}], 'symbols': [], 'urls':....
+2017-06-06 17:09:07 [0, 139]            {'hashtags': [], 'media': [{'display_url': '://twitter.com', ...
+
+```
 
 After that, I simply needed to confirm the absence of duplicate records. To do this, I selected columns in both tables where duplicates should not exist—specifically the `id` column, as it serves to uniquely identify each record. Since there were no repetitions, no rows were duplicated. I then counted the records individually using the `GROUP BY` and `COUNT` functions and verified that everything was correct, as no record count exceeded one.
 
-<img width="508" align = "left" height="229" alt="Captura de tela 2026-07-01 210354" src="https://github.com/user-attachments/assets/9caa184e-d92b-4305-9047-da7afa74096f" />
+```
+</> SQL
+SELECT id,
+       Count(*) AS count_user
+FROM Users
+GROUP BY id
+HAVING count_user > 0
 
-<img width="432" height="561" align = "right" alt="Captura de tela 2026-07-01 210305" src="https://github.com/user-attachments/assets/5687d98b-fe6b-4cd8-92a7-f9fcc41f9abe" />
+```
+
+```
+</> SQL
+
+Output:
+
+      id           count_user
+1     1009269193   1
+2     1037321378   1
+3     104198706    1
+4     1045110018   1
+5     1045853744   1
+6     1048784496   1
+7     1051127714   1
+8     1051446626   1
+9     1055685948   1
+10    1055730738   1
+11    1055907624   1
+12    1058051748   1
+13    1058256326   1
+14    1058345042   1
+15    1058460818   1
+16    1058520120   1
+17    1058717720   1
+18    1058807868   1
+19    1058917562   1
+
+```
 
 ##
 
-<img width="568" height="321" alt="Captura de tela 2026-07-01 210405" src="https://github.com/user-attachments/assets/385c7bcf-0bfd-45da-bb29-d0db3a446e9c" />
+```
+</> SQL
 
-<img width="447" height="311" alt="Captura de tela 2026-07-01 210417" src="https://github.com/user-attachments/assets/39821d05-d329-42ce-b9a1-99d04f5d7bc4" />
+SELECT id,
+       Count(*) AS count_user
+FROM Users
+GROUP BY id
+HAVING count_user > 1
+
+```
+
+```
+</> SQL
+
+Output:
+
+id    count_user
+
+```
 
 ##
 
-<img width="499" height="199" alt="Captura de tela 2026-07-01 210615" src="https://github.com/user-attachments/assets/4c7aee3d-ed02-441b-90a5-832c1cf14212" />
+```
+</> SQL
 
-<img width="368" height="427" alt="Captura de tela 2026-07-01 210544" src="https://github.com/user-attachments/assets/b8b0f248-611f-4090-819d-00d89ef06df3" />
+SELECT id,
+       Count(*) AS count_tweet
+FROM tweets
+GROUP BY id
+HAVING count_tweet > 0
+
+```
+
+```
+</> SQL
+
+Output:
+
+      id                     count_tweet
+1     10000021627            1
+2     10000861374            1
+3     10000955839873025      1
+4     100010103113134080     1
+5     10001321555            1
+6     100041964006817792     1
+7     10004390949691393      1
+8     10005496345919489      1
+9     10013166029246464      1
+10    10016000967712768      1
+11    10016592221962240      1
+12    100216059579211776     1
+13    100219416754659329     1
+14    10022162664521728      1
+15    10022562197147649      1
+16    10022578844340224      1
+
+```
 
 ##
 
-<img width="434" height="206" alt="Captura de tela 2026-07-01 210723" src="https://github.com/user-attachments/assets/2b62ea28-0ff8-4d43-8166-c52536c30b05" />
+```
+</> SQL
 
-<img width="375" height="126" alt="Captura de tela 2026-07-01 210745" src="https://github.com/user-attachments/assets/c8afe07d-e582-4421-a81e-4c1f36a25968" />
+SELECT id,
+       Count(*) AS count_tweet
+FROM tweets
+GROUP BY id
+HAVING count_tweet > 1
+
+```
+
+```
+</> SQL
+
+id    count_tweet
+
+```
 
 Since I know which columns contain no duplicate records—and indeed should not have any—I will select them as primary keys. 
 After that, I examine the records in each column to classify its data type. 
 Example:
 
-<img width="477" height="278" alt="image" src="https://github.com/user-attachments/assets/5b01ec48-5d9e-4195-969f-11f33d0387cf" />
+```
+</> SQL
 
-<img width="197" height="25" alt="Captura de tela 2026-07-02 113602" src="https://github.com/user-attachments/assets/9f9dbc67-8f47-404d-9b39-0753bda3d88c" />
+Ouput:
+
+      description
+1     Representing Arkansas in the U.S. Senate. Contact Info: 202-22
+2     United States Senator from the great state of Oklahoma.
+3     Senior U.S. Senator, Va. Vice Chairman, Intel Committee. Previo
+4     U.S. Senator. Family farmer. Lifetime resident of New Hartford,
+5     Married 30 years to Cindy. Parents of four. Three dogs. Serving
+6     Honored to represent the great state of Texas in the US Senate.
+7     Proud Husband | Father | @Cavs @Indians @Browns Fan | Cong
+8     Member of Congress from Minnesota's Fifth District. Co-Chair, @
+9     Blessed to rep beautiful South Florida and the wonderful folks wh
+10    Twitter feed for U.S. Senator Lindsey Graham of South Carolina.
+11    Farmer, mother, Maine islander, Member of Congress, lover of r
+
+```
+
+```
+</> SQL
+
+description VARCHAR(45)
+```
 
 ## Descriptive Stats
 
 
 The primary libraries were imported to prepare the analysis environment.
 
-in progress...
-
 ### Tweets Table
 
 #### Import 
 
-<img width="508" height="352" alt="image" src="https://github.com/user-attachments/assets/e8398a2a-7d0b-4de8-9642-89c9be40e027" />
+```
+</> Python
+
+import pandas as pd
+from pandasql import sqldf
+import numpy as np
+import ast as at
+import pprint
+import functools
+import matplotlib
+import pandasql
+
+```
 
 ### Data loading process
 
 The data were loaded from a JSON file using the standard read function from the pandas library, excluding a row that proved to be corrupted.
 
-<img width="683" height="443" alt="image" src="https://github.com/user-attachments/assets/01a91baa-85ae-44b4-adf5-a21c275a9c0b" />
+```
+</> Python
+
+import json
+import pandas as pd
+
+tweets = []
+
+with open("tweets1.json", "r", encoding="utf-8") as f:
+    for i, line in enumerate(f, start=1):
+        try:
+            tweets.append(json.loads(line))
+        except json.JSONDecodeError:
+            print(f"Linha {i} corrompida e ignorada.")
+
+Tweets = pd.DataFrame(tweets)
+
+print(Tweets.shape)
+
+```
 
 ### Import 
 
 Next, secondary supporting libraries were imported.
 
-<img width="240" height="204" alt="image" src="https://github.com/user-attachments/assets/0ef7ea49-92db-45f5-9d87-adfe7698b7bc" />
+```
+</> Python
+
+import json
+import math
+import glob
+import time
+
+```
 
 ### Extracting information
 
 A general inspection of the dataset was conducted, identifying columns, non-null values, and data types.
 
-<img width="739" height="625" alt="image" src="https://github.com/user-attachments/assets/9b8d20bb-8fa5-4247-886f-608dc7780792" />
-<img width="817" height="480" alt="image" src="https://github.com/user-attachments/assets/b1573227-a69c-4ba8-8f1c-5ea5f9406e3e" />
+```
+</> Python
+
+Tweets.info()
+
+```
+
+```
+</> Python
+
+<class 'pandas.DataFrame'>
+RangeIndex: 1243370 entries, 0 to 1243369
+Data columns (total 32 columns):
+ #   Column                   Non-Null Count  Dtype 
+---  ------                   --------------  ----- 
+ 0   contributors             0 non-null      object
+ 1   coordinates              2734 non-null   object
+ 2   created_at               1243370 non-null int64 
+ 3   display_text_range       1243370 non-null object
+ 4   entities                 1243370 non-null object
+ 5   favorite_count           1243370 non-null int64 
+ 6   favorited                1243370 non-null bool  
+ 7   geo                      2734 non-null   object
+ 8   id                       1243370 non-null int64 
+ 9  id_str                    1243370 non-null  str    
+ 10 in_reply_to_screen_name   65411 non-null    str    
+ 11 in_reply_to_status_id     54146 non-null    float64
+ 12 in_reply_to_status_id_str 54146 non-null    str    
+ 13 in_reply_to_user_id       65411 non-null    float64
+ 14 in_reply_to_user_id_str   65411 non-null    str    
+ 15 is_quote_status           1243370 non-null  bool   
+ 16 lang                      1243370 non-null  str    
+ 17 place                     22450 non-null    object 
+ 18 retweet_count             1243370 non-null  int64  
+ 19 retweeted                 1243370 non-null  bool   
+...
+ 30 withheld_in_countries     1 non-null        object 
+ 31 withheld_scope            1 non-null        str    
+dtypes: bool(4), float64(3), int64(5), object(10), str(10)
+memory usage: 270.4+ MB
+
+```
+
+--converter timestamp  olhe acima
 
 ### Obtaining descriptive statistics
 
 Descriptive statistics were obtained, including count, mean, minimum, maximum, and quartiles.
 
+```
+</> Python
+
+Tweets.describe()
+
 <img width="886" height="280" alt="image" src="https://github.com/user-attachments/assets/f0e368dd-0dec-41b5-96ae-e3fab5ca4cac" />
+
+```
+
+-desativar notação cíentifica
+pd.set_option('display.float_format', lambda x: '%.2f' % x)
 
 
 ### Function to convert scientific notation
@@ -231,7 +536,12 @@ Descriptive statistics were obtained, including count, mean, minimum, maximum, a
 
 The DuckDB library was imported to enable SQL queries.
 
+```
+</> Python
 
+import duckdb
+
+```
 
 ### Query A
 
@@ -323,5 +633,13 @@ screen_name                  NaN
 source                       NaN
 text               4.538053e+01
 truncated         0.000000e+00
+
+```
+
+in progress...
+
+
+```
+</> Python
 
 ```
