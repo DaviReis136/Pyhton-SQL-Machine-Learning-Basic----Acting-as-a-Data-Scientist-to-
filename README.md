@@ -9,7 +9,10 @@ My project centers on `Lobbyists4America`, <ins>a firm operating in the legislat
   + Review of Questions to Answer
   + Review of Questions to Hypothesis
   + Review of Questions to Hypothesis
-> Exploratory analysis 
+    </>br   
+> Exploratory analysis
+
+>  Descriptive Stats
   * Tweets Table
     * Import 
     * Data loading process
@@ -35,13 +38,7 @@ My project centers on `Lobbyists4America`, <ins>a firm operating in the legislat
   * Query C
   * Query D
   * Additional Descriptive Statistics
-    
-Detailed Summary
-
-1. Tweets Table
-
-1.1 Import 1
-> Descriptive Stats
+  
 
 
 
@@ -95,6 +92,8 @@ The data was extracted from Twitter in JSON format. I then performed a conversio
 
 The Python conversion code is this: 
 
+### Transforming Data
+
 ```
 </> Python
 
@@ -113,6 +112,8 @@ df = pd.read_json(inputfile, lines=True)
 df.to_csv('user.csv', encoding='utf-8', index=False)
 ```
 
+### Loading Data
+
 After this process, it is time to import the data into the software. In SQLiteStudio, once I have checked the columns in the CSV file, I will populate the columns in SQLiteStudio using the same names and quantity; then, I will import the data into the ta created in SQLiteStudio:
 
 ## 
@@ -122,6 +123,8 @@ After this process, it is time to import the data into the software. In SQLiteSt
 <img width="829" height="429" alt="image" src="https://github.com/user-attachments/assets/c4b5c463-8d9f-49a6-8a89-a811c13bc527" />
 
 ##
+
+### Foreign key
 
 To begin my exploratory analysis, I decided to find a column that established a link between the tweets table and the users table. After examining the columns, I noticed that the tweets table had a column named `user_id`, which seemed like an obvious connection point between the two; in the users table, I found the `id` column, which appeared to be the one referenced by the tweets table, so I ran a query to confirm.
 
@@ -202,6 +205,9 @@ user_id_from_tweet       user_id_from_users       name
 ```
 
 Now that I have confirmed the hypothesis, I am using them as foreign keys.
+
+### Criation date
+
 After that, I decided to verify a piece of information requested by the company—an analysis of tweets from 2008 to 2017—and realized that the data in the `tweets` table requires no trimming or additions, given that the creation date of the first tweet is in 2008 and the last is in 2017.
 
 ```
@@ -256,10 +262,13 @@ created_at ⬇️       display_text_range  entities
 
 ```
 
+### Primary key
+
 After that, I simply needed to confirm the absence of duplicate records. To do this, I selected columns in both tables where duplicates should not exist—specifically the `id` column, as it serves to uniquely identify each record. Since there were no repetitions, no rows were duplicated. I then counted the records individually using the `GROUP BY` and `COUNT` functions and verified that everything was correct, as no record count exceeded one.
 
 ```
 </> SQL
+
 SELECT id,
        Count(*) AS count_user
 FROM Users
@@ -377,6 +386,9 @@ id    count_tweet
 ```
 
 Since I know which columns contain no duplicate records—and indeed should not have any—I will select them as primary keys. 
+
+### Data type
+
 After that, I examine the records in each column to classify its data type. 
 Example:
 
@@ -405,6 +417,12 @@ Ouput:
 
 description VARCHAR(45)
 ```
+
+### Entity Relationship Diagram (ERD)
+
+Now that the veracity of the data, types, and relationships has been verified, I created an Entity-Relationship Diagram (ERD) based on my findings, using MySQL Workbench 6.0 software.
+
+<img width="573" height="1057" alt="image" src="https://github.com/user-attachments/assets/df41cb68-8ff8-4bed-b6f2-04e1a664dfda" />
 
 ## Descriptive Stats
 
@@ -541,25 +559,18 @@ Tweets.describe(datetime_is_numeric=True)
 
 Output:
 
-| Estatística       | created_at          | favorite_count |                      id |   in_reply_to_status_id | in_reply_to_user_id | retweet_count |            user_id |        quoted_status_id |
+| Statics           | created_at          | favorite_count |                      id |   in_reply_to_status_id | in_reply_to_user_id | retweet_count |            user_id |        quoted_status_id |
 | :---------------- | :------------------ | -------------: | ----------------------: | ----------------------: | ------------------: | ------------: | -----------------: | ----------------------: |
 | **Count**         | 1,243,370           |      1,243,370 |               1,243,370 |                  54,146 |              65,411 |     1,243,370 |          1,243,370 |                  56,418 |
 | **Mean**          | 2015-06-11 21:10:00 |         200.85 | 609,659,600,000,000,000 | 662,478,400,000,000,000 |  30,553,190,000,000 |        190.06 | 13,974,050,000,000 | 775,152,900,000,000,000 |
 | **Std**           | 52,263,240          |       3,545.41 | 214,092,500,000,000,000 | 210,676,800,000,000,000 | 152,843,500,000,000 |      9,944.39 | 10,533,830,000,000 |   7,897,866,000,000,000 |
 | **Min**           | 2008-08-04 17:28:51 |           0.00 |              87,741,860 |           1,059,864,000 |                  20 |          0.00 |          5,558,312 |              90,957,760 |
 | **25%**           | 2014-06-14 02:40:00 |           0.00 | 476,795,200,000,000,000 | 552,497,700,000,000,000 |          30,380,230 |          1.00 |         33,750,800 | 725,045,100,000,000,000 |
-| **50% (Mediana)** | 2015-11-04 16:50:00 |           2.00 | 662,381,800,000,000,000 | 739,907,400,000,000,000 |         204,905,600 |          4.00 |        234,022,300 | 794,551,000,000,000,000 |
+| **50% (median)** | 2015-11-04 16:50:00 |           2.00 | 662,381,800,000,000,000 | 739,907,400,000,000,000 |         204,905,600 |          4.00 |        234,022,300 | 794,551,000,000,000,000 |
 | **75%**           | 2016-10-02 02:30:00 |           8.00 | 781,241,600,000,000,000 | 831,621,200,000,000,000 |         622,731,300 |         10.00 |         99,315,300 | 839,266,200,000,000,000 |
 | **Max**           | 2017-06-06 17:16:00 |     984,832.00 | 872,140,000,000,000,000 | 872,139,400,000,000,000 | 866,745,300,000,000 |  3,637,896.00 | 85,471,510,000,000 | 872,138,300,000,000,000 |
 
 ```
-
-<img width="886" height="280" alt="image" src="https://github.com/user-attachments/assets/f0e368dd-0dec-41b5-96ae-e3fab5ca4cac" />
-
-
-
--desativar notação cíentifica
-pd.set_option('display.float_format', lambda x: '%.2f' % x)
 
 ### Import DuckDB
 
@@ -579,13 +590,13 @@ It was found that the tweets cover the period between 2008 and 2017.
 ```
 </> Python
 query = "SELECT make_timestamp(CAST(created_at AS BIGINT) * 1000000) AS data_formatada FROM Tweets ORDER BY created_at DESC"
-resultado = duckdb.sql(query).df()
-print(resultado)
+result = duckdb.sql(query).df()
+print(result)
 ```
 
 ```
 </> Python
-|        Nº | Data Formatada      |
+|        Nº |  created_at         |
 | --------: | ------------------- |
 |         1 | 2017-06-06 17:16:00 |
 |         2 | 2017-06-06 17:15:57 |
@@ -602,12 +613,14 @@ print(resultado)
 
 ```
 </> Python
-query = "SELECT make_timestamp(CAST(created_at AS BIGINT) * 1000000) AS data_formatada FROM Tweets ORDER BY created_at ASC" resultado = duckdb.sql(query).df() print(resultado) então me mostra como sairia o resultado então
+query = "SELECT make_timestamp(CAST(created_at AS BIGINT) * 1000000) AS data_formatada FROM Tweets ORDER BY created_at ASC"
+result = duckdb.sql(query).df()
+print(result) 
 ```
 
 ```
 </> Python
-|        Nº | Data Formatada      |
+|        Nº | created_at          |
 | --------: | ------------------- |
 |         1 | 2008-08-04 17:28:51 |
 |         2 | 2008-08-06 18:41:25 |
@@ -630,9 +643,9 @@ The profiles most retweeted by Congress were identified—revealing relationship
 </> Python
 
 query = "SELECT in_reply_to_screen_name, COUNT (in_reply_to_screen_name) as retweets_name FROM Tweets Group By in_reply_to_screen_name Order By retweets_name DESC"
-resultado = duckdb.sql(query).df()
+result = duckdb.sql(query).df()
 
-print(resultado)
+print(result)
 
 ```
 
@@ -797,9 +810,9 @@ The users responsible for the highest number of tweets on behalf of Congress and
 ```
 </> Python
 query = "SELECT user_id, COUNT (user_id) as tweets_user_id FROM Tweets Group By user_id Order By tweets_user_id DESC"
-resultado = duckdb.sql(query).df()
+result = duckdb.sql(query).df()
 
-print(resultado)
+print(result)
 ```
 ```
 </> Python
@@ -861,6 +874,7 @@ Code to extract (from the columns where the necessary calculations could be perf
 
 mode = Tweets.mode()
 print(mode)
+
 ```
 ##### Meam
 
@@ -880,45 +894,633 @@ print(means)
 ```
 </> Python
 
-Output:
+Output (Expalined):
 
-+-----------------------------+------------------------------------+
++-----------------------------+------------------------------------------------------+
+| Column Name                 | Converted Value / Meaning                            |
++-----------------------------+------------------------------------------------------+
+| contributors                | NaN (Null / Empty)                                   |
+| coordinates                 | NaN (Null / Empty)                                   |
+| created_at                  | 2015-06-11 21:10:00 (Average Date)                   |
+| display_text_range          | NaN (Null / Empty)                                   |
+| entities                    | NaN (Null / Empty)                                   |
+| favorite_count              | 200.85 (Average likes per tweet)                     |
+| favorited                   | 0.00 (Exactly 0%)                                    |
+| geo                         | NaN (Null / Empty)                                   |
+| id                          | 609,659,600,000,000,000                              |
+| id_str                      | 609,659,600,000,000,000                              |
+| in_reply_to_screen_name     | 14,369.80                                            |
+| in_reply_to_status_id       | 662,478,400,000,000,000                              |
+| in_reply_to_status_id_str   | 662,478,400,000,000,000                              |
+| in_reply_to_user_id         | 30,553,190,000,000,000                               |
+| in_reply_to_user_id_str     | 30,553,190,000,000,000                               |
+| is_quote_status             | 0.0461 (≈ 4.61% of all tweets)                        |
+| lang                        | NaN (Null / Empty)                                   |
+| place                       | NaN (Null / Empty)                                   |
+| retweet_count               | 190.06 (Average retweets per tweet)                  |
+| retweeted                   | 0.00 (Exactly 0%)                                    |
+| screen_name                 | NaN (Null / Empty)                                   |
+| source                      | NaN (Null / Empty)                                   |
+| text                        | 45.38 (Average text length in characters)            |
+| truncated                   | 0.00 (Exactly 0%)                                    |
+| user_id                     | 13,974,050,000,000,000                               |
+| withheld_copyright          | 1.00 (True / 100%)                                   |
+| withheld_in_countries       | NaN (Null / Empty)                                   |
+| withheld_scope              | NaN (Null / Empty)                                   |
++-----------------------------+------------------------------------------------------+
+```
 
-| Column Name                 | Converted Value / Meaning          |
-+-----------------------------+------------------------------------+
+```
+</> Python
 
-| contributors                | NaN (Null / Empty)                 |
-| coordinates                 | NaN (Null / Empty)                 |
-| created_at                  | 2015-06-11 21:10:00 (Average Date) |
-| display_text_range          | NaN (Null / Empty)                 |
-| entities                    | NaN (Null / Empty)                 |
-| favorite_count              | 200.85 (Average likes per tweet)   |
-| favorited                   | 0.00 (Percentage close to 0)       |
-| geo                         | NaN (Null / Empty)                 |
-| id                          | 609659600000000000                 |
-| id_str                      | 609659600000000000                 |
-| in_reply_to_screen_name     | 14369.80                           |
-| in_reply_to_status_id       | 662478400000000000                 |
-| in_reply_to_status_id_str   | 662478400000000000                 |
-| in_reply_to_user_id         | 30553190000000                     |
-| in_reply_to_user_id_str     | 30553190000000                     |
-| is_quote_status             | 0.05 (4.61% of all tweets)         |
-| lang                        | NaN (Null / Empty)                 |
-| place                       | NaN (Null / Empty)                 |
-| retweet_count               | 190.06 (Average retweets per tweet)|
-| retweeted                   | 0.00 (Exactly 0%)                  |
-| screen_name                 | NaN (Null / Empty)                 |
-| source                      | NaN (Null / Empty)                 |
-| text                        | 45.38 (Average text length)        |
-| truncated                   | 0.00 (Exactly 0%)                  |
-+-----------------------------+------------------------------------+
+deviation = Tweets.apply(pd.to_numeric, errors="coerce")
+
+population standard deviation = deviation.mode(numeric_only=True)
+
+print(population standard deviation)
 
 ```
 
-in progress...
+```
+</> Python
+
+Output ( Explained ):
+
+| **Column Name**       | **Mode (Most Frequent Value)** | **Meaning**                                                                |
+| --------------------- | -----------------------------: | -------------------------------------------------------------------------- |
+| contributors          |                            NaN | No mode (all values are null)                                              |
+| coordinates           |                            NaN | No mode (all values are null)                                              |
+| created_at            |                   1.423237e+09 | Unix timestamp corresponding to the most frequent date                     |
+| display_text_range    |                            NaN | No mode (all values are null)                                              |
+| entities              |                            NaN | No mode (all values are null)                                              |
+| favorite_count        |                            0.0 | Most tweets received 0 likes                                               |
+| favorited             |                          False | Tweets were generally not favorited by the authenticated user              |
+| geo                   |                            NaN | No geographic information available                                        |
+| id                    |                      877418565 | Smallest/first unique value returned as mode (IDs are unique)              |
+| id_str                |                      877418565 | String representation of the tweet ID                                      |
+| text                  |                       3.141593 | Most frequent numeric value after conversion (non-numeric text became NaN) |
+| truncated             |                          False | Tweets were generally not truncated                                        |
+| user_id               |                   2.962868e+09 | Most frequent user ID after numeric conversion                             |
+| possibly_sensitive    |                            0.0 | Tweets were generally not marked as sensitive                              |
+| extended_entities     |                            NaN | No mode (all values are null)                                              |
+| quoted_status_id      |                   8.592532e+17 | Most frequent quoted tweet ID after numeric conversion                     |
+| quoted_status_id_str  |                   8.592532e+17 | String representation of the quoted tweet ID                               |
+| withheld_copyright    |                            1.0 | Copyright restriction flag set to True                                     |
+| withheld_in_countries |                            NaN | No country restrictions recorded                                           |
+| withheld_scope        |                            NaN | No withholding scope specified                                             |
+
+```
+
+```
+</> Python
+
+variations = Tweets.var(numeric_only=True)
+print(variations)
+
+```
+
+```
+</> Python
+
+numbers = Tweets.select_dtypes(include=["int64", "float64"])
+
+amplitude = numbers.max() - numbers.min()
+
+print(amplitude)
+
+```
 
 
 ```
 </> Python
 
+Output ( Explained ):
+
+| **Column Name**       | **Range (Converted Value)** | **Meaning**                                                   |
+| --------------------- | --------------------------: | ------------------------------------------------------------- |
+| created_at            |                 278,898,400 | Range of tweet creation dates (Unix timestamp)                |
+| favorite_count        |                     984,832 | Difference between the maximum and minimum number of likes    |
+| id                    |     872,140,000,000,000,000 | Difference between the largest and smallest tweet IDs         |
+| in_reply_to_status_id |     872,139,400,000,000,000 | Difference between the largest and smallest replied tweet IDs |
+| in_reply_to_user_id   |     866,745,300,000,000,000 | Difference between the largest and smallest replied user IDs  |
+| retweet_count         |                   3,637,896 | Difference between the maximum and minimum number of retweets |
+| user_id               |     854,715,100,000,000,000 | Difference between the largest and smallest user IDs          |
+| quoted_status_id      |     872,138,300,000,000,000 | Difference between the largest and smallest quoted tweet IDs  |
+
+```
+
+```
+</> Python
+
+numbers = Tweets.select_dtypes(include=[np.number])
+
+sample standard deviation = numbers.std()
+
+print(sample standard deviation)
+
+```
+
+```
+</> Python
+
+Output ( Expalined ):
+
+| **Column Name**       | **Standard Deviation (Converted Value)** | **Meaning**                                                 |
+| --------------------- | ---------------------------------------: | ----------------------------------------------------------- |
+| created_at            |                               52,263,240 | Standard deviation of tweet creation dates (Unix timestamp) |
+| favorite_count        |                                3,545.405 | Standard deviation of the number of likes per tweet         |
+| id                    |                  214,092,500,000,000,000 | Standard deviation of tweet IDs                             |
+| in_reply_to_status_id |                  210,676,800,000,000,000 | Standard deviation of replied tweet IDs                     |
+| in_reply_to_user_id   |                  152,843,500,000,000,000 | Standard deviation of replied user IDs                      |
+| retweet_count         |                                9,944.392 | Standard deviation of the number of retweets                |
+| user_id               |                  105,338,300,000,000,000 | Standard deviation of user IDs                              |
+| quoted_status_id      |                   78,978,660,000,000,000 | Standard deviation of quoted tweet IDs                      |
+
+
+```
+
+## User Table
+
+### Import
+
+The main libraries were imported.
+
+```
+</> Python
+
+import pandas as pd
+from pandasql import sqldf
+import numpy as np
+import ast as at
+import pprint
+import functools
+import matplotlib
+import pandasql
+
+```
+
+### Data loading process
+
+The JSON file was loaded using pandas (JSON reading function).
+
+```
+</> Python
+
+Users = pd.read_json('users1.json', lines = True)
+
+```
+
+### Import
+
+Auxiliary libraries were imported to complement the analysis.
+
+```
+</> Python
+
+import json
+import math
+import glob
+import time
+
+```
+
+### Extracting information
+
+Inspection of columns, data types, and non-null values.
+```
+</> Python
+
+Users.info()
+
+| **#** | **Column Name**                    | **Non-Null Count** | **Data Type** |
+| ----: | ---------------------------------- | -----------------: | :------------ |
+|     0 | contributors_enabled               |                548 | bool          |
+|     1 | created_at                         |                548 | object        |
+|     2 | default_profile                    |                548 | bool          |
+|     3 | default_profile_image              |                548 | bool          |
+|     4 | description                        |                545 | str           |
+|     5 | entities                           |                545 | object        |
+|     6 | favourites_count                   |                548 | int64         |
+|     7 | follow_request_sent                |                548 | bool          |
+|     8 | followers_count                    |                548 | int64         |
+|     9 | following                          |                548 | bool          |
+|    10 | friends_count                      |                548 | int64         |
+|    11 | geo_enabled                        |                548 | bool          |
+|    12 | has_extended_profile               |                548 | bool          |
+|    13 | id                                 |                548 | int64         |
+|    14 | id_str                             |                548 | int64         |
+|    15 | is_translation_enabled             |                548 | bool          |
+|    16 | is_translator                      |                548 | bool          |
+|    17 | lang                               |                548 | str           |
+|    18 | listed_count                       |                548 | int64         |
+|    19 | location                           |                548 | str           |
+|    20 | name                               |                548 | str           |
+|    21 | notifications                      |                548 | bool          |
+|    22 | profile_background_color           |                548 | str           |
+|    23 | profile_background_image_url       |                512 | str           |
+|    24 | profile_background_image_url_https |                512 | str           |
+|    25 | profile_background_tile            |                548 | bool          |
+|    26 | profile_banner_url                 |                513 | str           |
+|    27 | profile_image_url                  |                548 | str           |
+|    28 | profile_image_url_https            |                548 | str           |
+|    29 | profile_link_color                 |                548 | str           |
+|    30 | profile_sidebar_border_color       |                548 | str           |
+|    31 | profile_sidebar_fill_color         |                548 | str           |
+|    32 | profile_text_color                 |                548 | str           |
+|    33 | profile_use_background_image       |                548 | bool          |
+|    34 | protected                          |                548 | bool          |
+|    35 | screen_name                        |                548 | str           |
+|    36 | statuses_count                     |                548 | int64         |
+|    37 | time_zone                          |                503 | str           |
+|    38 | translator_type                    |                548 | str           |
+|    39 | url                                |                513 | str           |
+|    40 | utc_offset                         |                503 | float64       |
+|    41 | verified                           |                548 | bool          |
+
+| **Attribute**                      | **Value** |
+| ---------------------------------- | --------- |
+| Total Columns                      | 42        |
+| Total Rows                         | 548       |
+| Boolean Columns                    | 14        |
+| Integer Columns (`int64`)          | 7         |
+| Floating-Point Columns (`float64`) | 1         |
+| Object Columns                     | 2         |
+| String Columns (`str`)             | 18        |
+| Memory Usage                       | 127.5 KB  |
+
+```
+
+### Generating the description
+
+Generation of descriptive statistics for the dataset.
+
+```
+</> Python
+
+Users.describe()
+
+```
+
+```
+</> Python
+
+Outpu:
+
+| **Index** | **contributors_enabled** | **created_at (Converted)** | **default_profile** | **...** | **url**                      | **utc_offset** | **verified** | ...
+| --------: | :----------------------- | :------------------------- | :------------------ | :------ | :--------------------------- | -------------: | :----------- |
+|         0 | False                    | **2014-12-01 03:47:17**    | True                | ...     | [http://t.co](http://t.co)   |            NaN | True         |
+|         1 | False                    | **2009-04-20 16:19:36**    | False               | ...     | [http://t.co](http://t.co)   |       -18000.0 | True         |
+|         2 | False                    | **2013-04-25 00:26:33**    | False               | ...     | [https://t.co](https://t.co) |       -14400.0 | True         |
+|         3 | False                    | **2011-03-22 01:52:54**    | False               | ...     | [https://t.co](https://t.co) |       -18000.0 | True         |
+|         4 | False                    | **2011-01-06 21:21:46**    | False               | ...     | [http://t.co](http://t.co)   |            NaN | True         |
+|         ⋮ | ⋮                        | ⋮                          | ⋮                   | ⋮       | ⋮                            |              ⋮ | ⋮            |
+|       543 | False                    | **2008-09-12 14:50:07**    | False               | ...     | [http://t.co](http://t.co)   |       -14400.0 | True         |
+|       544 | False                    | **2016-06-14 17:35:24**    | True                | ...     | [https://t.co](https://t.co) |       -25200.0 | True         |
+|       545 | False                    | **2009-02-26 15:33:01**    | False               | ...     | [https://t.co](https://t.co) |       -14400.0 | True         |
+|       546 | False                    | **2012-06-13 13:28:01**    | False               | ...     | [http://t.co](http://t.co)   |       -14400.0 | True         |
+|       547 | False                    | **2016-10-23 18:23:37**    | True                | ...     | NaN                          |            NaN | False        |
+
+```
+
+### Import DuckDB
+
+Import DuckDB to execute queries.
+
+```
+</> Python
+
+import duckdb
+
+```
+
+### Query A
+
+Analyze profile creation data, noting the temporal alignment with the period of the tweets (demonstrating that the profiles were created at the end of the conference participation).
+
+```
+</> Python
+
+query = "SELECT created_at FROM Users Order By created_at DESC"
+result = duckdb.sql(query).df()
+
+print(result)
+```
+```
+</> Python
+
+Output:
+
+            created_at
+0    25/05/2010 16:02:26
+1    07/04/2015 19:36:11
+2    23/10/2016 18:23:37
+3    19/04/2017 12:08:47
+4    02/02/2017 19:10:40
+..                   ...
+543  29/12/2007 18:32:03
+544  26/11/2007 03:57:02
+545  12/07/2007 02:43:33
+546  03/07/2007 00:45:53
+547  27/04/2007 05:25:52
+
+[548 rows x 1 columns]
+```
+
+```
+</> Python
+query = "SELECT created_at FROM Users Order By created_at ASC"
+result = duckdb.sql(query).df()
+
+print(result)
+
+```
+
+```
+</> Python
+
+Output:
+
+       created_at
+0      1177689952
+1      1183464353
+2      1184249013
+3      1196090222
+4      1198993923
+..            ...
+543    1486073840
+544    1492614927
+545 Sun Oct 23 18:23:37 +0000 2016
+546 Tue Apr 07 19:36:11 +0000 2015
+547 Tue May 25 16:02:26 +0000 2010
+
+[548 rows x 1 columns]
+27/04/2007 13:05:52
+```
+
+### Query B
+
+Users with the highest number of followers were identified, indicating greater reach and influence.
+
+```
+</> Python
+
+query = "SELECT followers_count FROM Users"
+result = duckdb.sql(query).df()
+
+print(result.describe())
+
+result.describe()
+
+```
+```
+</> Python
+
+Output: 
+
+| **Statistic**                | **Followers Count (Converted Value)** |
+| ---------------------------- | ------------------------------------: |
+| **Count**                    |                                   548 |
+| **Mean**                     |                            163,433.90 |
+| **Standard Deviation (Std)** |                          1,597,357.00 |
+| **Minimum (Min)**            |                                     4 |
+| **25% (1st Quartile)**       |                              8,960.25 |
+| **50% (Median)**             |                             16,732.00 |
+| **75% (3rd Quartile)**       |                             33,081.00 |
+| **Maximum (Max)**            |                            31,712,580 |
+
+```
+
+### Query C
+
+It was found that only 10 of the 540 users did not have a verified account; this points, to some extent, to the nature of state-run online channels—which are more easily and logically verified, given their active role within the U.S. legal framework—and confirms their function in establishing individual identity.
+
+```
+</> Python
+
+query = "SELECT verified, Count(*) as how_many_users_are_verified From Users Group By verified"
+result = duckdb.sql(query).df()
+
+print(result)
+
+```
+
+```
+
+</> Python
+
+| **Verified** | **Number of Users** |
+| :----------: | ------------------: |
+|     True     |                 530 |
+|     False    |                  18 |
+
+```
+
+### Query D
+
+The distribution of users by location in the United States was determined (1 per location), revealing a geographically distributed representation.
+
+```
+</> Python
+
+query = "SELECT location, Count(*) as location_count From Users Group By location"
+result = duckdb.sql(query).df()
+
+print(result)
+
+```
+```
+</> Python
+
+0         Boise, Idaho, USA              1
+1       Howard, Pennsylvania             1
+2          Schaumburg, IL                1
+3          Sacramento, CA                1
+4                     #NJ                1
+..                    ...              ...
+352          Oshkosh, WI                 1
+353           Vermont/DC                 1
+354              Indiana                 1
+355      Friendswood, TX                 1
+356       Banner Elk, NC                 1
+
+```
+
+### Additional Descriptive Statistics
+
+Code to extract the mean, mode, population/sample standard deviation, range, and variance (for the columns where the necessary calculations could be performed).
+
+ ### Conclusion about Descriptive Statics
+
+
+```
+</> Python
+
+Users = Users.apply(pd.to_numeric, errors="coerce")
+
+average = Users.mean(numeric_only=True)
+print(avarege)
+
+```
+
+```
+</> Python
+| **Column Name**                    | **Mean (Converted Value)** |
+| ---------------------------------- | -------------------------: |
+| contributors_enabled               |                   0.000000 |
+| created_at                         |              1,320,118,000 |
+| default_profile                    |                   0.257299 |
+| default_profile_image              |                   0.003650 |
+| description                        |                        NaN |
+| entities                           |                        NaN |
+| favourites_count                   |                 413.192400 |
+| follow_request_sent                |                   0.000000 |
+| followers_count                    |             163,433.900000 |
+| following                          |                   0.012774 |
+| friends_count                      |               2,033.732000 |
+| geo_enabled                        |                   0.516423 |
+| has_extended_profile               |                   0.098540 |
+| id                                 |     72,363,030,000,000,000 |
+| id_str                             |     72,363,030,000,000,000 |
+| is_translation_enabled             |                   0.027372 |
+| is_translator                      |                   0.000000 |
+| lang                               |                        NaN |
+| listed_count                       |               1,340.648000 |
+| location                           |                        NaN |
+| name                               |                        NaN |
+| notifications                      |                   0.000000 |
+| profile_background_color           |               ∞ (Infinity) |
+| profile_background_image_url       |                        NaN |
+| profile_background_image_url_https |                        NaN |
+| profile_background_tile            |                   0.136861 |
+| profile_banner_url                 |                        NaN |
+| profile_image_url                  |                        NaN |
+| profile_image_url_https            |                        NaN |
+| profile_link_color                 |               ∞ (Infinity) |
+| profile_sidebar_border_color       |              33,680.180000 |
+| profile_sidebar_fill_color         |              60,657.600000 |
+| profile_text_color                 |               ∞ (Infinity) |
+| profile_use_background_image       |                   0.753650 |
+| protected                          |                   0.000000 |
+| screen_name                        |                        NaN |
+| statuses_count                     |               3,658.960000 |
+| time_zone                          |                        NaN |
+| translator_type                    |                        NaN |
+| url                                |                        NaN |
+| utc_offset                         |             -16,819.090000 |
+| verified                           |                   0.967153 |
+```
+```
+
+</> Python
+
+mode = Users.mode().T
+
+```
+
+```
+
+</> Python
+
+Output(Explained):
+
+| **Column Name**                    | **Mode Value** | **Practical Meaning**                                            |
+| ---------------------------------- | -------------- | ---------------------------------------------------------------- |
+| is_translation_enabled             | False          | Translation is disabled on most accounts.                        |
+| is_translator                      | False          | Regular users (not official platform translators).               |
+| lang                               | Non-numeric    | Text column (coerced to `NaN` by `pd.to_numeric`).               |
+| listed_count                       | 307.0 / 351.0  | Tie (multimodal values).                                         |
+| location                           | Non-numeric    | Text column (coerced to `NaN` by `pd.to_numeric`).               |
+| name                               | Non-numeric    | Text column (coerced to `NaN` by `pd.to_numeric`).               |
+| notifications                      | False          | Push notifications are disabled by default.                      |
+| profile_background_color           | 0.0            | Hexadecimal color code incorrectly converted to a numeric value. |
+| profile_background_image_url       | Non-numeric    | Image URLs (coerced to `NaN` by `pd.to_numeric`).                |
+| profile_background_image_url_https | Non-numeric    | Image URLs (coerced to `NaN` by `pd.to_numeric`).                |
+| profile_background_tile            | False          | Background image is not tiled.                                   |
+| profile_banner_url                 | Non-numeric    | Image URLs (coerced to `NaN` by `pd.to_numeric`).                |
+| profile_image_url                  | Non-numeric    | Image URLs (coerced to `NaN` by `pd.to_numeric`).                |
+| profile_image_url_https            | Non-numeric    | Image URLs (coerced to `NaN` by `pd.to_numeric`).                |
+| profile_link_color                 | 9999.0         | Hexadecimal color code incorrectly converted to a numeric value. |
+| profile_sidebar_border_color       | 0.0            | Hexadecimal color code incorrectly converted to a numeric value. |
+| profile_sidebar_fill_color         | 0.0            | Hexadecimal color code incorrectly converted to a numeric value. |
+| profile_text_color                 | 333333.0       | Default hexadecimal text color converted to a numeric value.     |
+| profile_use_background_image       | True           | Most profiles use a background image.                            |
+| protected                          | False          | Most accounts are public (not protected).                        |
+| screen_name                        | Non-numeric    | Usernames (coerced to `NaN` by `pd.to_numeric`).                 |
+| statuses_count                     | 0.0 / 3583.0   | Tie (multimodal values).                                         |
+| time_zone                          | Non-numeric    | Text column (coerced to `NaN` by `pd.to_numeric`).               |
+| translator_type                    | Non-numeric    | Text column (coerced to `NaN` by `pd.to_numeric`).               |
+| url                                | Non-numeric    | Website URLs (coerced to `NaN` by `pd.to_numeric`).              |
+| utc_offset                         | -14400.0       | Most common UTC offset (UTC−4).                                  |
+| verified                           | True           | The majority of accounts are verified.                           |
+
+
+```
+
+```
+
+</> Python
+
+amplitude = Users.var(numeric_only=True)
+
+print(amplitude)
+
+```
+
+```
+</> Python
+
+Output(Explained):
+
+
+| **Column Name**              |                 **Variance (Converted Value)** | **Practical Meaning**                                          |
+| ---------------------------- | ---------------------------------------------: | -------------------------------------------------------------- |
+| contributors_enabled         |                                       0.000000 | No variance (all values are identical).                        |
+| default_profile              |                                       0.191446 | Variance of the default profile flag.                          |
+| default_profile_image        |                                       0.003643 | Very low variance in the default profile image flag.           |
+| favourites_count             |                                     931,517.30 | Variance of the number of favorites.                           |
+| follow_request_sent          |                                       0.000000 | No variance (all values are identical).                        |
+| followers_count              |                              2,555,155,000,000 | Variance of the number of followers.                           |
+| following                    |                                       0.012634 | Variance of the following flag.                                |
+| friends_count                |                                     39,418,760 | Variance of the number of friends.                             |
+| geo_enabled                  |                                       0.250187 | Variance of the geolocation enabled flag.                      |
+| has_extended_profile         |                                       0.088992 | Variance of the extended profile flag.                         |
+| id                           | 53,463,280,000,000,000,000,000,000,000,000,000 | Variance of user IDs.                                          |
+| id_str                       | 53,463,280,000,000,000,000,000,000,000,000,000 | Variance of user ID strings converted to numeric values.       |
+| is_translation_enabled       |                                       0.026672 | Variance of the translation enabled flag.                      |
+| is_translator                |                                       0.000000 | No variance (all values are identical).                        |
+| listed_count                 |                                     12,727,690 | Variance of the number of public lists containing the account. |
+| notifications                |                                       0.000000 | No variance (all values are identical).                        |
+| profile_background_tile      |                                       0.118346 | Variance of the background tile flag.                          |
+| profile_use_background_image |                                       0.186001 | Variance of the background image usage flag.                   |
+| protected                    |                                       0.000000 | No variance (all accounts share the same protection status).   |
+| statuses_count               |                                     18,141,410 | Variance of the number of posted statuses (tweets).            |
+| utc_offset                   |                                     20,366,170 | Variance of the UTC offset values.                             |
+| verified                     |                                       0.031826 | Variance of the verified account flag.                         |
+
+
+```
+
+```
+
+</> Python
+
+numericas = Users.select_dtypes(include=[np.number])
+
+desvio = numericas.std()
+
+print(desvio)
+
+```
+```
+
+</> Python
+favourites_count       9.651514e+02
+followers_count        1.597357e+06
+friends_count          6.278436e+03
+id                     2.312213e+17
+id_str                 2.312213e+17
+listed_count           3.567588e+03
+statuses_count         4.259273e+03
+utc_offset             4.512889e+03
+dtype: float64
 ```
