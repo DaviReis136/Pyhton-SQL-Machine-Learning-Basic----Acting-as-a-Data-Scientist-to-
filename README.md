@@ -1524,3 +1524,101 @@ statuses_count         4.259273e+03
 utc_offset             4.512889e+03
 dtype: float64
 ```
+
+## Beyond descriptive statistics
+
+### Loading descriptive statistical data:
+
+<img width="1281" height="572" alt="image" src="https://github.com/user-attachments/assets/8103cd19-20a3-45f5-b3d4-ea8c67fe7ad5" />
+
+<img width="1235" height="536" alt="image" src="https://github.com/user-attachments/assets/c83a4073-4939-4311-8d23-1214772280dc" />
+
+<img width="1097" height="592" alt="image" src="https://github.com/user-attachments/assets/3ebcdb2a-73f7-4295-b04a-d74e0f43f5bb" />
+
+<img width="1049" height="463" alt="image" src="https://github.com/user-attachments/assets/de5a4d1e-4099-42de-975b-91aaa0935402" />
+
+<img width="55" height="458" alt="image" src="https://github.com/user-attachments/assets/c0784043-c088-402e-a344-530f89bd071f" />
+
+## Looking deeper
+
+### Most recurring topics
+
+converter step created_in
+
+Importing libraries
+
+Checking the column we will use
+
+Selecting it in lowercase letters
+
+Downloading stopwords
+
+Downloading the necessary punkt function
+
+Counting the most frequently used words and excluding invalid results
+
+Leaving only the top 30
+
+Creating a chart
+
+New metric - Word Chart
+
+Counting words year by year and removing useless ones (numerals/acronyms)
+
+New metric – creating year-by-year word charts
+
+### Sentiment Analysis
+
+Creating a column that expresses the sentiment conveyed by the words, ranging from -1 to 1, and rounding the results to remove scientific notation
+
+New metric - Histogram of the 'sentiments' column
+
+New metric—creating histograms that express the sentiment conveyed by the words year by year, ranging from -1 to 1. And rounding the results to remove scientific notation
+conferir
+
+### Predictions about the tweets number tweeted
+
+Counting the total number of tweets
+
+Counting the tweets year by year
+
+By performing a linear regression on the number of tweets per year—that is, plotting a red linear trend line based on the results to project future outcomes—we can observe the trend. Note that linear regression is a machine learning process.
+
+New metric: Linear regression and Tweet forecasting
+
+R² of the linear regression above
+
+Performing a Pearson analysis of the number of tweets per year (plotting a linear regression line with a slope based on the results)
+
+New Metric - Pearson Correlation
+
+### Predictions about the most reccurent topics tweeted
+
+Performing Pearson analysis and generating Pearson plots for some of the most frequently counted words
+
+1 - Student
+
+New metric – Student (Pearson correlation)
+
+2 - Small Businesses (Pearson Correlation) / New Metric
+
+3 - Congress (Pearson Correlation) / New Metric
+
+3 - Creating linear regression and linear regression plots for the words (congress, violence, health, student, and house)
+
+New Metric - Linear regression for the words (congress, violence, health, student, and house)
+
+## Conclusion
+
+In a way, what surprises me most is that all our hypotheses proved to be valid.
+
+[ Hypotheses ]
+
+1- As shown by the descriptive statistics, the users who commented the most indeed held more significant weight/influence. By going beyond basic descriptive statistics, we were able to establish a visible metric for this—a word cloud representing the most frequently repeated words in their descriptions.
+
+2- As observed in the descriptive statistics, the primary connections involved members of Congress, with the strength of the relationship correlating to their level of importance. By going beyond descriptive statistics, we created a word cloud displaying the most frequently repeated words in the profiles of the most retweeted members.
+
+3- We found that the topics most frequently tweeted about by Congress members were indeed controversial and engaging subjects, such as recent events (current news) and gun violence; legislative matters affecting specific groups (families, households, students, small businesses); and topics directly related to Congress itself.
+
+
+In progresss...
