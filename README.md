@@ -2,7 +2,6 @@
 
 My project centers on `Lobbyists4America`, <ins>a firm operating in the legislative sector that aims to provide valuable information to its clients—the company's target audience</ins>. These clients, in turn, seek to influence legislation in the United States. Achieving this requires a strategic approach to gathering relevant information for them. To implement this strategy, they have hired me <ins>as a data scientist to analyze Congressional tweets from 2008 to 2017</ins>, shedding light on key issues, relationships, and members of Congress. Consequently, the target audience for the proposed solution is the same group that requested it: Lobbyists4America’s own clients. However, there is another group that—while not the primary focus of my project—might also be interested in the solution addressing the issues raised by Lobbyists4America. This group includes media outlets attracted to major topics discussed by Congress (especially attention-grabbing subjects like the implementation of specific laws) and the professionals within that sphere—journalists, reporters, and the outlets' respective audiences—as well as the parties upon whom Lobbyists4America’s clients sought to exert influence based on the issues highlighted by the Congressional data.
 
-
 # Contents​
 
 > Review of Questions to Answer / Hypothesis / Approach
@@ -1545,52 +1544,538 @@ dtype: float64
 
 converter step created_in
 
-Importing libraries
+```
 
+Tweets["created_at"] = pd.to_datetime(
+    Tweets["created_at"],
+    unit="s",
+    utc=True
+)
+
+```
+```
+
+query = "SELECT created_at FROM Tweets"
+resultado = duckdb.sql(query).df()
+
+print(resultado)
+
+```
+```
+          created_at
+0    2008-08-04 14:28:51-03:00
+1    2008-08-06 16:04:45-03:00
+2    2008-08-06 17:35:36-03:00
+3    2008-08-07 10:52:52-03:00
+4    2008-08-07 12:12:05-03:00
+...                        ...
+1243365 2017-06-06 14:15:01-03:00
+1243366 2017-06-06 14:15:03-03:00
+1243367 2017-06-06 14:15:17-03:00
+1243368 2017-06-06 14:15:57-03:00
+1243369 2017-06-06 14:16:00-03:00
+
+[1243370 rows x 1 columns]
+```
+
+Importing libraries
+```
+
+Output:
+
+from IPython.display import display
+from sklearn import datasets
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import pandasql as ps
+from pandasql import *
+from sqlalchemy import text
+from sqlalchemy import sql
+from sqlalchemy import create_engine
+from pandasql import sqldf as pysqldf
+import pandasql
+
+```
 Checking the column we will use
+```
+Tweets_sql = Tweets[["text"]]
+
+pysqldf("SELECT text FROM Tweets_sql")
+```
 
 Selecting it in lowercase letters
 
+```
+text182 = pysqldf("SELECT (LOWER(text)) AS text FROM Tweets_sql")
+```
+
 Downloading stopwords
+
+```
+import nltk
+
+nltk.download('stopwords')
+```
 
 Downloading the necessary punkt function
 
+```
+import nltk
+
+nltk.download('punkt_tab')
+
+```
+
 Counting the most frequently used words and excluding invalid results
+
+```
+from nltk.tokenize import word_tokenize
+import re
+
+texto = " ".join(text182["text"].astype(str))
+
+# Remove URLs
+texto = re.sub(r"http\S+", "", texto)
+
+# Remove mentions (@user)
+texto = re.sub(r"@\w+", "", texto)
+
+# Remove just the simbol #
+texto = texto.replace("#", "")
+
+# Remove just the simbol !
+texto = texto.replace("!", "")
+
+# Remove just the simbol -
+texto = texto.replace("-", "")
+
+# Remove just the simbol :
+texto = texto.replace(":", "")
+
+# Remove just the simbol ,
+texto = texto.replace(",", "")
+
+# Remove just the simbol ...
+texto = texto.replace("...", "")
+
+# Remove just the simbol &
+texto = texto.replace("&", "")
+
+# Remove just the simbol ?
+texto = texto.replace("?", "")
+
+# Remove just the simbol .
+texto = texto.replace(".", "")
+
+# Remove just the simbol (
+texto = texto.replace("(", "")
+
+# Remove just the simbol $
+texto = texto.replace("$", "")
+
+ruidos = {"rt", "s", "n't", "'", '"', "”", ")"}
+
+words = word_tokenize(texto.lower())
+
+# Filtrar as palavras
+palavras_filtradas = [p for p in words if p not in stop_words and p not in ruidos]
+
+#print(palavras_filtradas)
+
+````
 
 Leaving only the top 30
 
+```
+from collections import Counter
+
+wordDict = Counter(palavras_filtradas)
+
+top30 = wordDict.most_common(30)
+
+print(top30)
+```
+
 Creating a chart
+
+```
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+
+# Junta todas as palavras em um único texto
+texto = " ".join(palavras_filtradas)
+
+# Creat a word cloud
+wordcloud = WordCloud(
+    width=1000,
+    height=600,
+    background_color="white",
+    max_words=100
+).generate(texto)
+
+# Exibition
+plt.figure(figsize=(14, 8))
+plt.imshow(wordcloud, interpolation="bilinear")
+plt.axis("off")
+plt.title("Word cloud from Tweets", fontsize=18)
+plt.show()
+```
 
 New metric - Word Chart
 
 Counting words year by year and removing useless ones (numerals/acronyms)
 
-New metric – creating year-by-year word charts
+```
+import re
+from collections import Counter
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+
+stop_words = set(stopwords.words("english"))
+ruidos = {"rt", "s", "n't", "'", '"', ")", ";", "amp", "w/", "“", "”"}
+
+def gerar_wordcloud(df, ano):
+    
+    texto = " ".join(df["text"].astype(str)).lower()
+    
+    # Remove URLs
+    texto = re.sub(r"http\S+", "", texto)
+    
+    # Remove menções
+    texto = re.sub(r"@\w+", "", texto)
+    
+    # Remove apenas o símbolo # (mantém o texto da hashtag)
+    texto = texto.replace("#", "")
+    
+    # Tokenização
+    palavras = word_tokenize(texto)
+    
+    # Filtragem
+    palavras_filtradas = [
+        p for p in palavras
+        if p.isalpha()
+        and p not in stop_words
+        and p not in ruidos
+    ]
+
+    contador = Counter(palavras_filtradas)
+
+    print(f"\n====== {ano} ======")
+    print(contador.most_common(30))
+
+    if len(contador) == 0:
+        print("Nenhuma palavra encontrada.")
+        return
+
+    wc = WordCloud(
+        width=1200,
+        height=700,
+        background_color="white",
+        max_words=100
+    ).generate_from_frequencies(contador)
+
+    plt.figure(figsize=(15,8))
+    plt.imshow(wc, interpolation="bilinear")
+    plt.axis("off")
+    plt.title(f"Word Cloud - {ano}", fontsize=18)
+    plt.show()
+
+```
+Tweets["created_at"] = pd.to_datetime(Tweets["created_at"])
+
+for ano in range(2008, 2018):
+    
+    df_ano = Tweets[Tweets["created_at"].dt.year == ano][["text"]]
+    
+    print(f"Tweets in {ano}: {len(df_ano)}")
+    
+    gerar_wordcloud(df_ano, ano)
+```
+
+    New metric – creating year-by-year word charts
 
 ### Sentiment Analysis
 
 Creating a column that expresses the sentiment conveyed by the words, ranging from -1 to 1, and rounding the results to remove scientific notation
+
+```
+from textblob import TextBlob
+
+Tweets["sentiment"] = Tweets["text"].apply(
+    lambda text: TextBlob(str(text)).sentiment.polarity
+)
+```
+
+```
+Tweets["sentiment"] = Tweets["sentiment"].round(4)
+
+```
+
+```
+Tweets_sql124 = Tweets[["text", "sentiment", "created_at"]].copy()
+
+```
+
+```
+pysqldf ( "SELECT text, sentiment from Tweets_sql124 where sentiment >= 0.0 order by sentiment Desc " )
+
+```
+
+```
+
+                                                     text  sentiment
+0        The best example of 'circular fundraising' I'v...        1.0
+1              just signed up and happy to be on board!        1.0
+2                    @AlanBarber great to hear from you!        1.0
+3        #tcot @kenblackwell - happy to be on board wit...        1.0
+4                 @michelebachmann - welcome to twitter!        1.0
+...                                                   ...        ...
+1103547               👇🏽 Let's do it. https://t.co        0.0
+1103548  @BetsyDeVosED How can you protect American stu...        0.0
+1103549  @urbaninstitute @BrookingsInst @TaxPolicyCente...        0.0
+1103550    Dismantling #DoddFrank returns us to the days ...        0.0
+1103551  In the shadows of the #ComeyHearing, @HouseGOP...        0.0
+
+[1103552 rows x 2 columns]
+
+```
+
+```
+pysqldf ( "SELECT text, sentiment from Tweets_sql124 where sentiment < 0 order by sentiment Desc " )
+```
+
+```
+Output:
+
+                                                     text  sentiment
+0        RT @TeamJohnKasich: VERY easy to imagine after...    -0.0001
+1            Discussing major reforms to the #Pentagon in #...    -0.0004
+2         Surprise, surprise. New @UCSUSA report shows 8...    -0.0004
+3         RT @NormEisen: major point folks r missing is ...    -0.0004
+4        These major investments don't happen overnight...    -0.0006
+...                                                   ...        ...
+139813   .@POTUS has announced plans to privatize US Ai...    -1.0000
+139814        National concealed-carry reciprocity is a terr...    -1.0000
+139815       The Republican health care bill guts the Medic...    -1.0000
+139816     The Trump Admin's plans to gut Medicaid would ...    -1.0000
+139817       GOP health plan cuts Medicaid. Devastating for...    -1.0000
+
+[139818 rows x 2 columns]
+
+```
 
 New metric - Histogram of the 'sentiments' column
 
 New metric—creating histograms that express the sentiment conveyed by the words year by year, ranging from -1 to 1. And rounding the results to remove scientific notation
 conferir
 
+```
+Tweets_sql125 = Tweets[["text", "sentiment", "created_at"]].copy()
+
+import pandas as pd
+from textblob import TextBlob
+import matplotlib.pyplot as plt
+
+# crieted the column year
+Tweets_sql125["year"] = Tweets_sql125["created_at"].dt.year
+
+# calculeted the sentiment
+Tweets_sql125["sentiment"] = Tweets_sql125["text"].apply(
+    lambda x: TextBlob(str(x)).sentiment.polarity
+)
+
+#one histogram by year
+for year, temp_df in Tweets_sql125.groupby("year"):
+    
+    print(f"Tweets from {year}")
+    
+    temp_df["sentiment"].hist(bins=30)
+    plt.title(f"Sentiment - {year}")
+    plt.xlabel("Polarity")
+    plt.ylabel("Frequency")
+    plt.show()
+
+```
+
 ### Predictions about the tweets number tweeted
 
 Counting the total number of tweets
+```
+pysqldf ( "SELECT Count(text) as total_tweets from Tweets_sql125" )
+```
+
+```
+Output:
+
+   total_tweets
+0       1243370
+
+```
 
 Counting the tweets year by year
 
+```
+
+pysqldf("""
+SELECT year, COUNT(text) AS total_tweets_by_year
+FROM Tweets_sql125
+GROUP BY year
+ORDER BY year
+""")
+
+```
+
+```
+
+Output:
+
+   year  total_tweets_by_year
+0  2008                   112
+1  2009                  8234
+2  2010                 13763
+3  2011                 35163
+4  2012                 50791
+5  2013                124439
+6  2014                168308
+7  2015                258256
+8  2016                354942
+9  2017                229362
+
+```
+
+```
+dados = (
+    Tweets_sql125.groupby("year")
+    .size()
+    .reset_index(name="total_tweets")
+)
+
+print(dados)
+```
+```
+   year  total_tweets
+0  2008           112
+1  2009          8234
+2  2010         13763
+3  2011         35163
+4  2012         50791
+5  2013        124439
+6  2014        168308
+7  2015        258256
+8  2016        354942
+9  2017        229362
+```
+
 By performing a linear regression on the number of tweets per year—that is, plotting a red linear trend line based on the results to project future outcomes—we can observe the trend. Note that linear regression is a machine learning process.
+
+```
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+import numpy as np
+
+# X = anos
+X = dados[["year"]]
+
+# y = quantidade de tweets
+y = dados["total_tweets"]
+
+# Ajuste do modelo
+modelo = LinearRegression()
+modelo.fit(X, y)
+
+# Valores previstos para os anos existentes
+dados["previsto"] = modelo.predict(X)
+
+# Anos futuros
+anos_futuros = np.array([[2018], [2019], [2020]])
+previsao = modelo.predict(anos_futuros)
+
+# Junta anos históricos + futuros para desenhar uma única reta
+anos_todos = np.vstack([X.values, anos_futuros])
+reta_toda = modelo.predict(anos_todos)
+
+# Gráfico
+plt.figure(figsize=(10,6))
+
+# Dados reais
+plt.scatter(X, y, color="blue", s=60, label="Dados reais")
+
+# Reta de regressão (histórico + futuro)
+plt.plot(anos_todos, reta_toda, color="red", linewidth=2, label="Regressão Linear")
+
+# Pontos previstos
+plt.scatter(
+    anos_futuros,
+    previsao,
+    color="green",
+    marker="X",
+    s=120,
+    label="Previsão"
+)
+
+# Escreve o valor previsto ao lado dos pontos
+for ano, valor in zip(anos_futuros.flatten(), previsao):
+    plt.text(ano, valor, f"{valor:.0f}", fontsize=10,
+             ha="left", va="bottom")
+
+plt.xlabel("Ano")
+plt.ylabel("Quantidade de Tweets")
+plt.title("Regressão Linear e Previsão de Tweets")
+plt.grid(True)
+plt.legend()
+
+plt.show()
+
+print("Previsões:")
+for ano, valor in zip(anos_futuros.flatten(), previsao):
+    print(f"{ano}: {valor:.0f} tweets")
+
 
 New metric: Linear regression and Tweet forecasting
 
+Repetir...
+
 R² of the linear regression above
+
+```
+r2 = modelo.score(X, y)
+print("R² =", r2)
+
+#R² close to 1 (0.9 or higher): the relationship is strongly linear.
+#R² between 0.7 and 0.9: linear regression may be acceptable.
+#R² below 0.5: the relationship is likely not well explained by a straight line, and another model (polynomial, exponential, time series, etc.) might be more suitable.
+
+#In addition to R², it is important to visualize the data. If the points form an approximately straight line-either rising or falling-linear regression makes sense. If there are curves, cycles, or abrupt changes, the relationship is likely not linear.
+
+```
+
+```
+R² = 0.5852164739733133
+```
 
 Performing a Pearson analysis of the number of tweets per year (plotting a linear regression line with a slope based on the results)
 
+```
+
+dados1 = pysqldf("""
+SELECT year, COUNT(*) AS total_tweets
+FROM Tweets_sql125
+GROUP BY year
+ORDER BY year
+""")
+
+correlacao = dados1["year"].corr(dados1["total_tweets"])
+
+print(f"Correlação de Pearson: {correlacao:.4f}")
+
+```
+
 New Metric - Pearson Correlation
+
+<img width="761" height="470" alt="image" src="https://github.com/user-attachments/assets/00b9fef9-17d4-4a11-afd5-f20c1104b774" />
 
 ### Predictions about the most reccurent topics tweeted
 
@@ -1598,15 +2083,266 @@ Performing Pearson analysis and generating Pearson plots for some of the most fr
 
 1 - Student
 
+```
+print(f"r = {r:.3f}")
+print(f"p = {p:.3f}")
+
+# Gráfico
+plt.scatter(dados["year"], dados["freq_student"])
+plt.plot(
+    dados["year"],
+    np.poly1d(np.polyfit(dados["year"], dados["freq_student"], 1))(dados["year"]),
+    color="red"
+)
+
+plt.xlabel("Ano")
+plt.ylabel("Frequência da palavra 'student'")
+plt.title(f"Correlação de Pearson (r = {r:.3f})")
+plt.grid(True)
+plt.show()
+```
+
+```
+
+Output:
+
+r = 0.886
+```
+
+
 New metric – Student (Pearson correlation)
+
+<img width="713" height="472" alt="image" src="https://github.com/user-attachments/assets/c746955a-c0b0-4f80-a581-8bec0359cf08" />
 
 2 - Small Businesses (Pearson Correlation) / New Metric
 
-3 - Congress (Pearson Correlation) / New Metric
+```
+import pandas as pd
+from scipy.stats import pearsonr
+import matplotlib.pyplot as plt
 
+# Conta quantas vezes "small business" aparece por ano
+dados = []
+
+for ano in range(2008, 2018):
+    df_ano = Tweets[Tweets["created_at"].dt.year == ano]
+    
+    texto = " ".join(df_ano["text"].astype(str)).lower()
+    
+    freq = texto.count("small business")
+    
+    dados.append([ano, freq])
+
+dados = pd.DataFrame(dados, columns=["year", "freq_small business"])
+
+# Correlação de Pearson
+r, p = pearsonr(dados["year"], dados["freq_small business"])
+
+print(f"r = {r:.3f}")
+print(f"p = {p:.3f}")
+
+# Gráfico
+plt.scatter(dados["year"], dados["freq_small business"])
+plt.plot(
+    dados["year"],
+    np.poly1d(np.polyfit(dados["year"], dados["freq_small business"], 1))(dados["year"]),
+    color="red"
+)
+
+plt.xlabel("Ano")
+plt.ylabel("Frequência da palavra 'small business'")
+plt.title(f"Correlação de Pearson (r = {r:.3f})")
+plt.grid(True)
+plt.show()
+
+```
+
+```
+Output:
+```
+
+<img width="662" height="485" alt="image" src="https://github.com/user-attachments/assets/0e72bc3c-2776-4374-9718-1ea9088d1f9b" />
+
+3 - Congress (Pearson Correlation) / New Metric
+```
+import pandas as pd
+from scipy.stats import pearsonr
+import matplotlib.pyplot as plt
+
+# Conta quantas vezes "congress" aparece por ano
+dados = []
+
+for ano in range(2008, 2018):
+    df_ano = Tweets[Tweets["created_at"].dt.year == ano]
+    
+    texto = " ".join(df_ano["text"].astype(str)).lower()
+    
+    freq = texto.count("congress")
+    
+    dados.append([ano, freq])
+
+dados = pd.DataFrame(dados, columns=["year", "freq_congress"])
+
+# Correlação de Pearson
+r, p = pearsonr(dados["year"], dados["freq_congress"])
+
+print(f"r = {r:.3f}")
+print(f"p = {p:.3f}")
+
+# Gráfico
+plt.scatter(dados["year"], dados["freq_congress"])
+plt.plot(
+    dados["year"],
+    np.poly1d(np.polyfit(dados["year"], dados["freq_congress"], 1))(dados["year"]),
+    color="red"
+)
+
+plt.xlabel("Ano")
+plt.ylabel("Frequência da palavra 'congress'")
+
+    dados.append([ano, frequencia])
+
+dados = pd.DataFrame(dados, columns=["Ano", "Frequencia"])
+
+# Regressão Linear
+X = dados[["Ano"]]
+y = dados["Frequencia"]
+
+modelo = LinearRegression()
+modelo.fit(X, y)
+
+dados["Previsto"] = modelo.predict(X)
+
+r2 = r2_score(y, dados["Previsto"])
+
+# Previsão para os próximos 3 anos
+anos_futuros = pd.DataFrame({"Ano": [2018, 2019, 2020]})
+previsao = modelo.predict(anos_futuros)
+
+# Resultados
+print("=" * 60)
+print(f"Palavra: {palavra.upper()}")
+print(f"Coeficiente angular: {modelo.coef_[0]:.4f}")
+print(f"Intercepto: {modelo.intercept_:.2f}")
+print(f"R²: {r2:.4f}")
+
+print("\nPrevisões:")
+for ano, valor in zip(anos_futuros["Ano"], previsao):
+    print(f"{ano}: {valor:.2f}")
+
+# Gráfico
+plt.figure(figsize=(10,6))
+
+plt.scatter(
+    dados["Ano"],
+    dados["Frequencia"],
+    s=70,
+    label="Dados observados"
+)
+
+plt.plot(
+    dados["Ano"],
+    dados["Previsto"],
+    color="red",
+    linewidth=2,
+    label="Regressão Linear"
+)
+
+plt.scatter(
+    anos_futuros["Ano"],
+    previsao,
+    marker="x",
+    s=90,
+    label="Previsão"
+)
+
+plt.title(f"Regressão Linear - Palavra '{palavra}'")
+plt.xlabel("Ano")
+plt.ylabel("Frequência")
+plt.grid(True)
+plt.legend()
+
+plt.show()
+
+
+```
 3 - Creating linear regression and linear regression plots for the words (congress, violence, health, student, and house)
 
 New Metric - Linear regression for the words (congress, violence, health, student, and house)
+
+```
+Output:
+```
+
+```
+Palavra: CONGRESS
+Coeficiente angular: 752.9697
+Intercepto: -1512869.12
+R²: 0.7825
+
+Previsões:
+2018: 6623.73
+2019: 7376.70
+2020: 8129.67
+```
+```
+Palavra: VIOLENCE
+Coeficiente angular: 170.4606
+Intercepto: -342547.97
+R²: 0.4738
+
+Previsões:
+2018: 1441.53
+2019: 1611.99
+2020: 1782.45
+```
+
+<img width="651" height="412" alt="image" src="https://github.com/user-attachments/assets/80e21852-db4b-4ccc-a7e9-b4a72c89bcb1" />
+
+```
+============================================================
+Palavra: HEALTH
+Coeficiente angular: 937.2909
+Intercepto: -1883333.05
+R²: 0.8390
+
+Previsões:
+2018: 8120.00
+2019: 9057.29
+2020: 9994.58
+```
+
+<img width="693" height="437" alt="image" src="https://github.com/user-attachments/assets/cb6fade1-ed73-49ef-a666-64ed9502b456" />
+
+```
+============================================================
+Palavra: STUDENT
+Coeficiente angular: 170.6909
+Intercepto: -342876.25
+R²: 0.6927
+
+Previsões:
+2018: 1578.00
+2019: 1748.69
+2020: 1919.38
+```
+
+<img width="716" height="450" alt="image" src="https://github.com/user-attachments/assets/543ab284-d483-45fa-9a25-36e8d006796e" />
+ 
+```
+============================================================
+Palavra: HOUSE
+Coeficiente angular: 1091.8061
+Intercepto: -2192924.70
+R²: 0.8195
+
+Previsões:
+2018: 10339.93
+2019: 11431.74
+2020: 12523.55
+```
+
+<img width="850" height="501" alt="image" src="https://github.com/user-attachments/assets/8df0060c-15fe-42a7-97c6-0be7c8e8c7e4" />
 
 ## Conclusion
 
