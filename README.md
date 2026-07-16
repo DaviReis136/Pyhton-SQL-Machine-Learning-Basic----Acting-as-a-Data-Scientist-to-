@@ -1553,6 +1553,7 @@ Tweets["created_at"] = pd.to_datetime(
 )
 
 ```
+
 ```
 
 query = "SELECT created_at FROM Tweets"
@@ -1561,6 +1562,7 @@ resultado = duckdb.sql(query).df()
 print(resultado)
 
 ```
+
 ```
           created_at
 0    2008-08-04 14:28:51-03:00
@@ -1579,6 +1581,7 @@ print(resultado)
 ```
 
 Importing libraries
+
 ```
 
 Output:
@@ -1597,30 +1600,38 @@ from pandasql import sqldf as pysqldf
 import pandasql
 
 ```
+
 Checking the column we will use
+
 ```
 Tweets_sql = Tweets[["text"]]
 
 pysqldf("SELECT text FROM Tweets_sql")
+
 ```
 
 Selecting it in lowercase letters
 
 ```
+
 text182 = pysqldf("SELECT (LOWER(text)) AS text FROM Tweets_sql")
+
 ```
 
 Downloading stopwords
 
 ```
+
 import nltk
 
 nltk.download('stopwords')
+
 ```
 
 Downloading the necessary punkt function
 
 ```
+
 import nltk
 
 nltk.download('punkt_tab')
@@ -1630,6 +1641,7 @@ nltk.download('punkt_tab')
 Counting the most frequently used words and excluding invalid results
 
 ```
+
 from nltk.tokenize import word_tokenize
 import re
 
@@ -1688,6 +1700,7 @@ palavras_filtradas = [p for p in words if p not in stop_words and p not in ruido
 Leaving only the top 30
 
 ```
+
 from collections import Counter
 
 wordDict = Counter(palavras_filtradas)
@@ -1695,11 +1708,13 @@ wordDict = Counter(palavras_filtradas)
 top30 = wordDict.most_common(30)
 
 print(top30)
+
 ```
 
 Creating a chart
 
 ```
+
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
@@ -1720,9 +1735,11 @@ plt.imshow(wordcloud, interpolation="bilinear")
 plt.axis("off")
 plt.title("Word cloud from Tweets", fontsize=18)
 plt.show()
+
 ```
 
 New metric - Word Chart
+
 
 Counting words year by year and removing useless ones (numerals/acronyms)
 
@@ -1784,6 +1801,8 @@ def gerar_wordcloud(df, ano):
     plt.show()
 
 ```
+
+```
 Tweets["created_at"] = pd.to_datetime(Tweets["created_at"])
 
 for ano in range(2008, 2018):
@@ -1795,31 +1814,36 @@ for ano in range(2008, 2018):
     gerar_wordcloud(df_ano, ano)
 ```
 
-    New metric – creating year-by-year word charts
+New metric – creating year-by-year word charts
 
 ### Sentiment Analysis
 
 Creating a column that expresses the sentiment conveyed by the words, ranging from -1 to 1, and rounding the results to remove scientific notation
 
 ```
+
 from textblob import TextBlob
 
 Tweets["sentiment"] = Tweets["text"].apply(
     lambda text: TextBlob(str(text)).sentiment.polarity
 )
+
 ```
 
 ```
+
 Tweets["sentiment"] = Tweets["sentiment"].round(4)
 
 ```
 
 ```
+
 Tweets_sql124 = Tweets[["text", "sentiment", "created_at"]].copy()
 
 ```
 
 ```
+
 pysqldf ( "SELECT text, sentiment from Tweets_sql124 where sentiment >= 0.0 order by sentiment Desc " )
 
 ```
@@ -1903,6 +1927,7 @@ for year, temp_df in Tweets_sql125.groupby("year"):
 ### Predictions about the tweets number tweeted
 
 Counting the total number of tweets
+
 ```
 pysqldf ( "SELECT Count(text) as total_tweets from Tweets_sql125" )
 ```
@@ -2032,7 +2057,7 @@ plt.show()
 print("Previsões:")
 for ano, valor in zip(anos_futuros.flatten(), previsao):
     print(f"{ano}: {valor:.0f} tweets")
-
+```
 
 New metric: Linear regression and Tweet forecasting
 
@@ -2342,7 +2367,7 @@ Previsões:
 2020: 12523.55
 ```
 
-<img width="850" height="501" alt="image" src="https://github.com/user-attachments/assets/8df0060c-15fe-42a7-97c6-0be7c8e8c7e4" />
+<img width="749" height="471" alt="image" src="https://github.com/user-attachments/assets/81bceda4-ba8b-4887-a5eb-6478ceb6bd6d" />
 
 ## Conclusion
 
