@@ -38,8 +38,12 @@ My project centers on `Lobbyists4America`, <ins>a firm operating in the legislat
   * Query D
   * Additional Descriptive Statistics
   
-
-
+> Beyond descriptive statistics
+  + Loading descriptive statistical data
+  + Most recurring topics
+  + Entiment Analysis
+  + Predictions about the tweets number tweeted
+  + Predictions about the most reccurent topics tweeted
 
 ## Review of Questions to Answer / Hypothesis / Approach​
 
