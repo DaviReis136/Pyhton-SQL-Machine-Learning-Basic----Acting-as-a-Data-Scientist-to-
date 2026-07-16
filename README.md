@@ -1,49 +1,105 @@
-# Resum 
+# Tweets from the United States Congress
 
-My project centers on `Lobbyists4America`, <ins>a firm operating in the legislative sector that aims to provide valuable information to its clients—the company's target audience</ins>. These clients, in turn, seek to influence legislation in the United States. Achieving this requires a strategic approach to gathering relevant information for them. To implement this strategy, they have hired me <ins>as a data scientist to analyze Congressional tweets from 2008 to 2017</ins>, shedding light on key issues, relationships, and members of Congress. Consequently, the target audience for the proposed solution is the same group that requested it: Lobbyists4America’s own clients. However, there is another group that—while not the primary focus of my project—might also be interested in the solution addressing the issues raised by Lobbyists4America. This group includes media outlets attracted to major topics discussed by Congress (especially attention-grabbing subjects like the implementation of specific laws) and the professionals within that sphere—journalists, reporters, and the outlets' respective audiences—as well as the parties upon whom Lobbyists4America’s clients sought to exert influence based on the issues highlighted by the Congressional data.
+<img width="1774" height="887" alt="Project Banner" src="https://github.com/user-attachments/assets/4b495ca4-5403-424e-8e18-b8a1ae445c08" />
 
-# Contents​
+# Project Summary
 
-> Review of Questions to Answer / Hypothesis / Approach
-  + Review of Questions to Answer
-  + Review of Questions to Hypothesis
-  + Review of Questions to Hypothesis
-    </>br   
-> Exploratory analysis
+This project was developed from the perspective of a **Data Scientist** working for **Lobbyists4America**, a fictional consulting firm operating in the U.S. legislative sector.
 
->  Descriptive Stats
-  * Tweets Table
-    * Import 
-    * Data loading process
-    * Import 
-    * Extracting information
-    * Function to convert scientific notation
-    * Extracting the description
-    * DuckDB Import
-    * Query A
-    * Query B
-    * Query C
-    * Additional Descriptive Statistics
+The company's objective is to provide data-driven intelligence to its clients, who seek to better understand legislative trends, congressional priorities, and public political communication in order to support strategic decision-making.
 
-* Users Table
-  * Import 
-  * Data loading process
-  * Import 
-  * Extraction
-  * Extracting the description
-  * DuckDB Import
-  * Query A
-  * Query B
-  * Query C
-  * Query D
-  * Additional Descriptive Statistics
-  
-> Beyond descriptive statistics
-  + Loading descriptive statistical data
-  + Most recurring topics
-  + Entiment Analysis
-  + Predictions about the tweets number tweeted
-  + Predictions about the most reccurent topics tweeted
+To achieve this objective, I analyzed **tweets published by members of the United States Congress between 2008 and 2017**. Using SQL, Python, Natural Language Processing (NLP), and Machine Learning techniques, I explored communication patterns, identified the most frequently discussed topics, measured public sentiment, and built predictive models to forecast future activity.
+
+Although the primary stakeholders are Lobbyists4America's clients, the findings may also be valuable to journalists, political analysts, researchers, media organizations, and anyone interested in understanding how congressional communication evolved during this period.
+
+---
+
+# Table of Contents
+
+- Project Overview
+- Business Problem
+- Research Questions
+- Hypotheses
+- Methodology
+- Dataset Description
+
+## Exploratory Data Analysis (EDA)
+
+### Tweets Dataset
+- Library Imports
+- Data Loading
+- Data Cleaning
+- Feature Extraction
+- Scientific Notation Conversion
+- Text Preprocessing
+- DuckDB Integration
+- SQL Query A
+- SQL Query B
+- SQL Query C
+- Additional Descriptive Statistics
+
+### Users Dataset
+- Library Imports
+- Data Loading
+- Data Cleaning
+- Feature Extraction
+- User Profile Analysis
+- DuckDB Integration
+- SQL Query A
+- SQL Query B
+- SQL Query C
+- SQL Query D
+- Additional Descriptive Statistics
+
+## Descriptive Statistics
+
+- Summary Statistics
+- Missing Values Analysis
+- Distribution Analysis
+- Data Quality Assessment
+
+## Natural Language Processing (NLP)
+
+- Text Preprocessing
+- Tokenization
+- Stopword Removal
+- Word Frequency Analysis
+- Word Cloud
+- Most Frequent Topics
+- Sentiment Analysis
+
+## Machine Learning
+
+- Linear Regression
+- Tweet Volume Prediction
+- Topic Trend Prediction
+- Model Evaluation
+
+## Results
+
+- Key Findings
+- Business Insights
+- Conclusions
+
+## Technologies Used
+
+- Python
+- SQL
+- DuckDB
+- Pandas
+- NumPy
+- Matplotlib
+- Scikit-learn
+- TextBlob
+- WordCloud
+
+## Future Improvements
+
+- Additional Machine Learning Models
+- Topic Modeling (LDA)
+- Time Series Forecasting
+- Interactive Dashboard
+- Network Analysis
 
 ## Review of Questions to Answer / Hypothesis / Approach​
 
@@ -89,343 +145,193 @@ advanced tasks involving machine learning—such as
 linear regression—on the data to address a specific
 question.
 
-## Exploratory analysis
+## Research Questions, Hypotheses, and Analytical Approach
 
-The data was extracted from Twitter in JSON format. I then performed a conversion, given that JSON is designed to facilitate data exchange between different programming languages—ultimately being converted into a format readable by the target language. My process followed this same logic: using Python and the pandas library in Visual Studio Code, I converted the received datasets into a CSV format compatible with the data tools installed on my computer—specifically SQLite, managed via SQLiteStudio. This not only made the data much easier to visualize—as I routinely use a CSV editor extension in Visual Studio Code that displays files in a table format—but also allowed me to inspect specific records to verify their accuracy and proper structure post-conversion, as well as to get a clear sense of the column organization.
+### Research Questions
 
-The Python conversion code is this: 
+1. **What were the main topics discussed by members of the United States Congress on Twitter between 2008 and 2017?**
 
-### Transforming Data
+2. **Which members of Congress were the most active and influential based on their Twitter activity?**
 
-```
-</> Python
+3. **What were the primary interaction patterns between members of Congress and other Twitter users or organizations?**
 
-import pandas as pd 
-with open('tweets.json', encoding='utf-8') as inputfile: 
-df = pd.read_json(inputfile, lines=True) 
-df.to_csv('tweets.csv', encoding='utf-8', index=False) 
-```
-And for the other dataset: 
-```
-</> Python
+---
 
-import pandas as pd 
-with open('user.json', encoding='utf-8') as inputfile: 
-df = pd.read_json(inputfile, lines=True) 
-df.to_csv('user.csv', encoding='utf-8', index=False)
-```
+### Research Hypotheses
 
-### Loading Data
+1. **Congressional tweets primarily focused on legislative matters, public policy, major political events, and nationally significant issues that generated public attention and debate.**
 
-After this process, it is time to import the data into the software. In SQLiteStudio, once I have checked the columns in the CSV file, I will populate the columns in SQLiteStudio using the same names and quantity; then, I will import the data into the ta created in SQLiteStudio:
+2. **Members holding leadership or senior positions within Congress were expected to publish more tweets and maintain a stronger presence on the platform than other members.**
 
-## 
+3. **The strongest interaction networks were expected to revolve around high-profile members of Congress and prominent political organizations, reflecting their greater visibility and influence.**
 
-<img width="846" height="447" alt="image" src="https://github.com/user-attachments/assets/e9836a02-d500-486f-971b-e87805d2367c" />
+---
 
-<img width="829" height="429" alt="image" src="https://github.com/user-attachments/assets/c4b5c463-8d9f-49a6-8a89-a811c13bc527" />
+### Analytical Approach
 
-##
+This project follows a structured data science workflow composed of three main stages:
 
-### Foreign key
+1. **Problem Definition**
+   - Define the business objective.
+   - Establish the research questions.
+   - Formulate hypotheses to guide the analysis.
 
-To begin my exploratory analysis, I decided to find a column that established a link between the tweets table and the users table. After examining the columns, I noticed that the tweets table had a column named `user_id`, which seemed like an obvious connection point between the two; in the users table, I found the `id` column, which appeared to be the one referenced by the tweets table, so I ran a query to confirm.
+2. **Data Preparation and Exploration**
+   - Load, clean, and preprocess the datasets.
+   - Explore the structure and quality of the data.
+   - Design the relational model used throughout the analysis.
+   - Perform descriptive statistics and exploratory data analysis (EDA).
 
-```
-</> SQL
+3. **Data Analysis and Modeling**
+   - Analyze the data using SQL queries, joins, filtering, aggregation functions, and Python.
+   - Apply Natural Language Processing (NLP) techniques to identify recurring topics and measure sentiment.
+   - Develop Machine Learning models, including Linear Regression, to identify trends and generate predictions regarding tweet volume and topic evolution.
+   - Interpret the results to generate actionable insights that support data-driven decision-making.
 
-SELECT tweets.user_id,
-       users.id,
-       users.name
-FROM tweets, users;
+# Exploratory Data Analysis (EDA)
 
-```
-```
-</> SQL
+The original datasets were provided in **JSON** format. Since the subsequent analysis was performed using SQL and Python, the first step consisted of converting the files into **CSV**, enabling efficient data manipulation, inspection, and integration with relational database systems.
 
-Output:
+The conversion was performed using **Python** and **Pandas**, producing datasets compatible with SQLite and DuckDB.
 
-      user_id   id           name
-1     5558312   2915095729   Governor Bill Walker
-2     5558312   33537967     Amy Klobuchar
-3     5558312   1378000346   Anthony G. Brown
-4     5558312   269992801    Gov. Asa Hutchinson
-5     5558312   234797704    Rep. Austin Scott
-6     5558312   82453460     RepBThompson
-7     5558312   55677432     Bill Cassidy
-8     5558312   26103389     Gov. Bill Haslam
-9     5558312   15394954     U.S. Rep. Bob Latta
-10    5558312   30216513     Rep. Brad Sherman
-11    5558312   47747074     Brian Schatz
-12    5558312   36396752     Idaho Governor
-13    5558312   305620929    Dutch Ruppersberger
-14    5558312   3298489662   Captain Clay Higgins
-15    5558312   17976923     CathyMcMorrisRodgers
-16    5558312   14984637     Chellie Pingree
-17    5558312   15324851     Senator Chris Coons
-18    5558312   150078976    Chris Murphy
-19    5558312   18137749     Chris Van Hollen
+## Data Conversion
 
+### Tweets Dataset
+
+```python
+import pandas as pd
+
+tweets_dataframe = pd.read_json("tweets.json", lines=True)
+tweets_dataframe.to_csv("tweets.csv", index=False, encoding="utf-8")
 ```
 
-```
-</> SQL
+### Users Dataset
 
-SELECT tweets.user_id AS user_id_from_tweet,
-       users.id AS user_id_from_users,
-       users.name
+```python
+import pandas as pd
+
+users_dataframe = pd.read_json("users.json", lines=True)
+users_dataframe.to_csv("users.csv", index=False, encoding="utf-8")
+```
+
+---
+
+## Data Loading
+
+After converting the datasets to CSV format, they were imported into **SQLiteStudio**.
+
+Before the import process, each database table was created with the appropriate column names and data types to preserve the original schema. Once imported, the datasets were inspected to verify that all records had been loaded correctly.
+
+<img width="846" height="447" alt="Database Import" src="https://github.com/user-attachments/assets/e9836a02-d500-486f-971b-e87805d2367c" />
+
+<img width="829" height="429" alt="Database Tables" src="https://github.com/user-attachments/assets/c4b5c463-8d9f-49a6-8a89-a811c13bc527" />
+
+---
+
+# Identifying the Relationship Between Tables
+
+The first step of the exploratory analysis was to identify how the two datasets were related.
+
+After examining both tables, the **user_id** column in the `tweets` table and the **id** column in the `users` table appeared to represent the same entity.
+
+An initial query confirmed this assumption.
+
+```sql
+SELECT
+    tweets.user_id,
+    users.id,
+    users.name
+FROM tweets,
+     users;
+```
+
+The Cartesian product confirmed that both columns shared the same identifier domain but did not establish the relationship.
+
+The relationship was then validated using a **LEFT JOIN**.
+
+```sql
+SELECT
+    tweets.user_id AS tweet_user_id,
+    users.id AS user_id,
+    users.name
 FROM tweets
 LEFT JOIN users
 ON tweets.user_id = users.id;
-
 ```
 
-```
-</> SQL
+The results confirmed that every `user_id` stored in the `tweets` table correctly references a corresponding record in the `users` table.
 
-Output:
+Therefore, the following relationship was established:
 
-user_id_from_tweet       user_id_from_users       name
-1     5558312                  5558312                  Senator John Boozman
-2     5558312                  5558312                  Senator John Boozman
-3     5558312                  5558312                  Senator John Boozman
-4     5558312                  5558312                  Senator John Boozman
-5     5558312                  5558312                  Senator John Boozman
-6     5558312                  5558312                  Senator John Boozman
-7     5558312                  5558312                  Senator John Boozman
-8     5558312                  5558312                  Senator John Boozman
-9     5558312                  5558312                  Senator John Boozman
-10    5558312                  5558312                  Senator John Boozman
-11    5558312                  5558312                  Senator John Boozman
-12    16056306                 16056306                 Jeff Flake
-13    5558312                  5558312                  Senator John Boozman
-14    5558312                  5558312                  Senator John Boozman
-15    5558312                  5558312                  Senator John Boozman
-16    5558312                  5558312                  Senator John Boozman
-17    5558312                  5558312                  Senator John Boozman
-18    5558312                  5558312                  Senator John Boozman
-19    5558312                  5558312                  Senator John Boozman
-```
+- **Primary Key:** `users.id`
+- **Foreign Key:** `tweets.user_id`
 
-Now that I have confirmed the hypothesis, I am using them as foreign keys.
+---
 
-### Criation date
+# Date Range Validation
 
-After that, I decided to verify a piece of information requested by the company—an analysis of tweets from 2008 to 2017—and realized that the data in the `tweets` table requires no trimming or additions, given that the creation date of the first tweet is in 2008 and the last is in 2017.
+The project focuses on congressional tweets published between **2008 and 2017**.
 
-```
-</> SQL
+To verify that the dataset satisfied this requirement, the earliest and latest publication dates were inspected.
 
-Output:
+The first tweet was published in **August 2008**, while the most recent record dates from **June 2017**, confirming that the dataset fully covers the intended analysis period.
 
-created_at ⬆️       display_ text_range  entities
-2008-08-04 17:28:51 [0, 74]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-2008-08-06 19:04:45 [0, 25]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-2008-08-06 20:35:36 [0, 65]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-2008-08-07 13:52:52 [0, 37]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-2008-08-07 15:12:05 [0, 90]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-2008-08-07 18:35:25 [0, 45]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-2008-08-18 14:07:35 [0, 121]             {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-2008-08-20 12:18:43 [0, 32]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-2008-08-21 16:24:07 [0, 84]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-2008-08-28 18:38:20 [0, 80]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-2008-09-03 02:42:32 [0, 28]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-2008-09-04 19:05:07 [0, 109]             {'hashtags': [{'indices':, 'text': 'rnc08'}], 'symbols': [], 'urls': [], ...
-2008-09-09 16:22:47 [0, 134]             {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-2008-09-09 18:14:25 [0, 109]             {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-2008-09-09 19:15:34 [0, 6]               {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-2008-09-11 14:48:52 [0, 45]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-2008-09-16 20:29:08 [0, 112]             {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-2008-09-16 21:10:12 [0, 29]              {'hashtags': [], 'symbols': [], 'urls': [], 'user_mentions': []}
-```
-```
-</> SQL
+---
 
-Output:
+# Primary Key Validation
 
-created_at ⬇️       display_text_range  entities
-2017-06-06 17:16:00 [0, 119]            {'hashtags': [{'indices':, 'text': 'WrongCHOICEAct'}], 'symbols': [], 'urls': []...
-2017-06-06 17:15:57 [0, 135]            {'hashtags': [{'indices':, 'text': 'VZ'}, {'indices':, 'text': 'Maduro'}]...
-2017-06-06 17:15:17 [14, 153]           {'hashtags': [{'indices':, 'text': 'Questions4Betsy'}, {'indices': [141, 153]...
-2017-06-06 17:15:03 [0, 140]            {'hashtags': [{'indices':, 'text': 'ComeyHearing'}], 'symbols': [], 'urls': ...
-2017-06-06 17:15:01 [0, 128]            {'hashtags': [{'indices':, 'text': 'DoddFrank'}], 'symbols': [], 'urls': [], ...
-2017-06-06 17:13:56 [72, 209]           {'hashtags': [{'indices':, 'text': 'Trumpcare'}, {'indices':, 'text': ...
-2017-06-06 17:13:35 [14, 152]           {'hashtags': [{'indices':, 'text': 'TrumpBudget'}, {'indices':, ...
-2017-06-06 17:13:17 [0, 65]             {'hashtags': [{'indices':, 'text': '603pride'}], 'media': [{'display_url': ...
-2017-06-06 17:12:34 [14, 153]           {'hashtags': [{'indices':, 'text': 'Questions4Betsy'}], 'symbols': [], 'urls': []...
-2017-06-06 17:11:04 [0, 140]            {'hashtags': [{'indices':, 'text': 'solar'}, {'indices':, 'text': ...
-2017-06-06 17:11:04 [48, 189]           {'hashtags': [{'indices':, 'text': 'Trumpcare'}], 'media': [{'display_url': ...
-2017-06-06 17:10:51 [0, 141]            {'hashtags': [{'indices':, 'text': 'PellGrants'}], 'symbols': [], 'urls': ...
-2017-06-06 17:10:49 [0, 140]            {'hashtags': [{'indices':, 'text': 'WrongChoiceAct'}], 'media': ...
-2017-06-06 17:10:47 [0, 134]            {'hashtags': [{'indices':, 'text': 'ProtectOurStudents'}, {'indices': [118, ...
-2017-06-06 17:10:46 [0, 15]             {'hashtags': [], 'symbols': [], 'urls': [{'display_url': '://twitter.com€¦'...
-2017-06-06 17:10:25 [0, 40]             {'hashtags': [], 'symbols': [], 'urls': [{'display_url': '://twitter.com€¦'...
-2017-06-06 17:09:56 [14, 158]           {'hashtags': [{'indices':, 'text': 'Questions4Betsy'}], 'symbols': [], 'urls':....
-2017-06-06 17:09:07 [0, 139]            {'hashtags': [], 'media': [{'display_url': '://twitter.com', ...
+Before creating the relational model, both datasets were inspected for duplicate identifiers.
 
-```
+Each table was grouped by its `id` column to verify uniqueness.
 
-### Primary key
-
-After that, I simply needed to confirm the absence of duplicate records. To do this, I selected columns in both tables where duplicates should not exist—specifically the `id` column, as it serves to uniquely identify each record. Since there were no repetitions, no rows were duplicated. I then counted the records individually using the `GROUP BY` and `COUNT` functions and verified that everything was correct, as no record count exceeded one.
-
-```
-</> SQL
-
-SELECT id,
-       Count(*) AS count_user
-FROM Users
+```sql
+SELECT
+    id,
+    COUNT(*) AS record_count
+FROM users
 GROUP BY id
-HAVING count_user > 0
-
+HAVING COUNT(*) > 1;
 ```
 
-```
-</> SQL
+The same validation was performed for the `tweets` table.
 
-Output:
-
-      id           count_user
-1     1009269193   1
-2     1037321378   1
-3     104198706    1
-4     1045110018   1
-5     1045853744   1
-6     1048784496   1
-7     1051127714   1
-8     1051446626   1
-9     1055685948   1
-10    1055730738   1
-11    1055907624   1
-12    1058051748   1
-13    1058256326   1
-14    1058345042   1
-15    1058460818   1
-16    1058520120   1
-17    1058717720   1
-18    1058807868   1
-19    1058917562   1
-
-```
-
-##
-
-```
-</> SQL
-
-SELECT id,
-       Count(*) AS count_user
-FROM Users
-GROUP BY id
-HAVING count_user > 1
-
-```
-
-```
-</> SQL
-
-Output:
-
-id    count_user
-
-```
-
-##
-
-```
-</> SQL
-
-SELECT id,
-       Count(*) AS count_tweet
+```sql
+SELECT
+    id,
+    COUNT(*) AS record_count
 FROM tweets
 GROUP BY id
-HAVING count_tweet > 0
-
+HAVING COUNT(*) > 1;
 ```
 
-```
-</> SQL
+No duplicate identifiers were found.
 
-Output:
+This confirms that:
 
-      id                     count_tweet
-1     10000021627            1
-2     10000861374            1
-3     10000955839873025      1
-4     100010103113134080     1
-5     10001321555            1
-6     100041964006817792     1
-7     10004390949691393      1
-8     10005496345919489      1
-9     10013166029246464      1
-10    10016000967712768      1
-11    10016592221962240      1
-12    100216059579211776     1
-13    100219416754659329     1
-14    10022162664521728      1
-15    10022562197147649      1
-16    10022578844340224      1
+- `users.id` is a valid primary key.
+- `tweets.id` is a valid primary key.
 
-```
+---
 
-##
+# Data Type Inspection
 
-```
-</> SQL
+After validating the relational structure, each attribute was inspected to determine its appropriate SQL data type.
 
-SELECT id,
-       Count(*) AS count_tweet
-FROM tweets
-GROUP BY id
-HAVING count_tweet > 1
+For example, the `description` field contains textual information and is therefore classified as a **VARCHAR** column.
 
-```
-
-```
-</> SQL
-
-id    count_tweet
-
-```
-
-Since I know which columns contain no duplicate records—and indeed should not have any—I will select them as primary keys. 
-
-### Data type
-
-After that, I examine the records in each column to classify its data type. 
-Example:
-
-```
-</> SQL
-
-Ouput:
-
-      description
-1     Representing Arkansas in the U.S. Senate. Contact Info: 202-22
-2     United States Senator from the great state of Oklahoma.
-3     Senior U.S. Senator, Va. Vice Chairman, Intel Committee. Previo
-4     U.S. Senator. Family farmer. Lifetime resident of New Hartford,
-5     Married 30 years to Cindy. Parents of four. Three dogs. Serving
-6     Honored to represent the great state of Texas in the US Senate.
-7     Proud Husband | Father | @Cavs @Indians @Browns Fan | Cong
-8     Member of Congress from Minnesota's Fifth District. Co-Chair, @
-9     Blessed to rep beautiful South Florida and the wonderful folks wh
-10    Twitter feed for U.S. Senator Lindsey Graham of South Carolina.
-11    Farmer, mother, Maine islander, Member of Congress, lover of r
-
-```
-
-```
-</> SQL
-
+```sql
 description VARCHAR(45)
 ```
 
-### Entity Relationship Diagram (ERD)
+This process was repeated for all remaining attributes to ensure consistency between the original datasets and the relational database schema.
 
-Now that the veracity of the data, types, and relationships has been verified, I created an Entity-Relationship Diagram (ERD) based on my findings, using MySQL Workbench 6.0 software.
+---
 
-<img width="573" height="1057" alt="image" src="https://github.com/user-attachments/assets/df41cb68-8ff8-4bed-b6f2-04e1a664dfda" />
+# Entity-Relationship Diagram (ERD)
+
+After validating the relationships, primary keys, foreign keys, and data types, an **Entity-Relationship Diagram (ERD)** was created using **MySQL Workbench** to document the database structure adopted throughout the project.
+
+<img width="573" height="1057" alt="Entity Relationship Diagram" src="https://github.com/user-attachments/assets/df41cb68-8ff8-4bed-b6f2-04e1a664dfda" />
 
 ## Descriptive Stats
 
